@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>頭の整理屋さん | ロジカル・デトックス</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for friendly visuals -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; }
+        h1, h2, h3, .font-maru { font-family: 'Zen Maru Gothic', sans-serif; }
+        .bg-warm { background-color: #fdfaf6; }
+        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+        .blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(251, 146, 60, 0.2);
+            filter: blur(50px);
+            border-radius: 50%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-warm text-slate-700">
+
+    <!-- Header -->
+    <header class="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b border-orange-100">
+        <div class="max-w-5xl mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="bg-orange-500 p-1.5 rounded-lg text-white">
+                    <i data-lucide="coffee" class="w-5 h-5"></i>
+                </div>
+                <span class="text-xl font-bold text-slate-800 font-maru">頭の整理屋さん</span>
+            </div>
+            <a href="#booking" class="bg-orange-500 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg shadow-orange-200 hover:bg-orange-600 transition">予約する</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div class="blob -top-20 -left-20"></div>
+        <div class="blob top-40 -right-20 bg-blue-100"></div>
+        
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-sm font-bold mb-6">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>話すだけで、脳内スッキリ！</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight text-slate-800 mb-8">
+                「ねぇ、これどう思う？」<br>
+                <span class="text-orange-500 underline decoration-orange-200 decoration-wavy underline-offset-8">そのままでOK</span>です。
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed max-w-2xl mx-auto">
+                家事の悩み、職場の人間関係、なんだか分からない不安。<br>
+                散らかった頭の中を、プロの「整理屋さん」が<br class="hidden md:block">
+                パパッとお片付けします。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#booking" class="bg-slate-800 text-white px-10 py-5 rounded-2xl text-xl font-bold shadow-2xl hover:bg-slate-700 transition">30分だけ脳を借りる</a>
+                <a href="#cases" class="bg-white border-2 border-slate-200 px-10 py-5 rounded-2xl text-xl font-bold hover:bg-slate-50 transition">何ができるの？</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="cases" class="py-24 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 font-maru italic">「こんな時に使ってください」</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Case 1 -->
+                <div class="bg-orange-50 p-8 rounded-[2.5rem] card-hover border border-orange-100 shadow-sm">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                        <i data-lucide="message-circle" class="text-orange-500 w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">誰かに聞いてほしいだけ</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        「旦那のあの態度がムカつく」「近所の付き合いが疲れる」など、答えはいらないけど、誰かに話してスッキリしたい時に。
+                    </p>
+                </div>
+
+                <!-- Case 2 -->
+                <div class="bg-blue-50 p-8 rounded-[2.5rem] card-hover border border-blue-100 shadow-sm">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                        <i data-lucide="layout-grid" class="text-blue-500 w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">やることが多すぎてパニック</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        「あれもやらなきゃ、これもやらなきゃ…」。タスクを全部書き出して、一緒に優先順位を「えいやっ」と決めます。
+                    </p>
+                </div>
+
+                <!-- Case 3 -->
+                <div class="bg-purple-50 p-8 rounded-[2.5rem] card-hover border border-purple-100 shadow-sm">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                        <i data-lucide="lightbulb" class="text-purple-500 w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">新しいことを始めたい</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        「副業したい」「趣味を見つけたい」。あなたの「好き」や「得意」を一緒に掘り起こして、地図を作ります。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Scenarios -->
+    <section class="py-20 px-6 bg-slate-50">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-12 font-maru">具体的には、こんな感じで進みます</h2>
+            <div class="space-y-6">
+                <!-- Scenario 1 -->
+                <div class="flex items-start gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <span class="text-3xl">🙋‍♀️</span>
+                    <div>
+                        <p class="font-bold text-orange-600 mb-1 font-maru">Aさん（50代・主婦）の場合</p>
+                        <p class="text-slate-600 italic mb-3">「娘とのやり取りでいつもイライラしちゃって。何が嫌なのか自分でも分からないんです」</p>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            → 一緒に感情を紐解くと、実は「寂しさ」が原因だったことが判明。30分後には「今度、こう言ってみるね！」と笑顔に。
+                        </p>
+                    </div>
+                </div>
+                <!-- Scenario 2 -->
+                <div class="flex items-start gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <span class="text-3xl">👨‍💻</span>
+                    <div>
+                        <p class="font-bold text-blue-600 mb-1 font-maru">Bさん（30代・会社員）の場合</p>
+                        <p class="text-slate-600 italic mb-3">「転職したいけど、何から手をつけていいか…。頭の中がゴミ屋敷状態です」</p>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            → コンサルの手法で思考を棚卸し。強みと不安を仕分けして、明日やるべき「1つのこと」を特定しました。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Steps -->
+    <section class="py-24 bg-orange-500 text-white">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 font-maru">どうやってやるの？</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">1</div>
+                    <h3 class="font-bold mb-3">とりあえず予約</h3>
+                    <p class="text-orange-100 text-sm">空いてる時間を選ぶだけ。事前準備は1秒もいりません。</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">2</div>
+                    <h3 class="font-bold mb-3">スマホでビデオ通話</h3>
+                    <p class="text-orange-100 text-sm">お茶でも飲みながら、思いついたままにお話しください。</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">3</div>
+                    <h3 class="font-bold mb-3">メモが届く</h3>
+                    <p class="text-orange-100 text-sm">終わった後に、私から「整理したまとめ」をLINEでお送りします。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="py-24 px-6">
+        <div class="max-w-xl mx-auto bg-white rounded-[3rem] p-12 shadow-2xl border border-orange-100 text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-orange-50 rounded-full"></div>
+            <h2 class="text-3xl font-bold mb-8 font-maru relative">料金について</h2>
+            <div class="space-y-6 relative">
+                <div class="flex justify-between items-center py-4 border-b border-orange-100">
+                    <span class="font-bold text-lg">さくっと30分</span>
+                    <span class="text-2xl font-bold text-orange-600">¥5,000</span>
+                </div>
+                <div class="flex justify-between items-center py-4">
+                    <span class="font-bold text-lg">じっくり60分</span>
+                    <span class="text-2xl font-bold text-orange-600">¥10,000</span>
+                </div>
+                <p class="text-xs text-slate-400">※初回の方、何から話していいか迷う方は30分がおすすめ！</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile -->
+    <section class="py-24 bg-white border-t border-slate-100">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+            <div class="relative">
+                <div class="w-48 h-48 rounded-[3rem] bg-slate-200 overflow-hidden shadow-xl rotate-3">
+                    <!-- 
+                        【写真の差し替え方法】
+                        1. あなたの顔写真を「profile.jpg」という名前で保存します。
+                        2. この index.html と同じフォルダに「profile.jpg」をアップロードしてください。
+                        3. 写真がない場合は、仮のグレー画像が表示されるようになっています。
+                    -->
+                    <img src="./profile.jpg" onerror="this.src='https://via.placeholder.com/400x400/e2e8f0/64748b?text=Your+Photo'" alt="タク" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -bottom-4 -right-4 bg-white p-3 rounded-2xl shadow-lg border border-slate-100">
+                    <span class="text-2xl">🎼</span>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-4 font-maru">話を聞く人：Eigo</h3>
+                <p class="text-slate-600 leading-relaxed mb-4">
+                    ビジネスコンサルタントとして難しいビジネス戦略を考えたり、指揮者として100人のオーケストラをまとめたりするのが仕事です。
+                </p>
+                <p class="text-slate-600 leading-relaxed">
+                    でも、本当に得意なのは「誰かの頭の中をスッキリさせて、明日を少しだけ楽しみな気持ちに変えること」。難しい話は抜きにして、楽しくおしゃべりしましょう！
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="booking" class="py-20 text-center px-6">
+        <h2 class="text-3xl font-bold mb-10 font-maru underline decoration-orange-300 decoration-8 underline-offset-4">さぁ、モヤモヤを置いていきませんか？</h2>
+        <div class="space-y-6">
+            <a href="#" class="inline-block bg-orange-500 text-white px-12 py-6 rounded-3xl text-2xl font-bold shadow-xl shadow-orange-200 hover:scale-105 transition-all">
+                予約状況をチェックする
+            </a>
+            <p class="text-slate-400 text-sm">公式LINEでのご相談も大歓迎です！</p>
+        </div>
+        <div class="mt-24 text-slate-300 text-xs tracking-[0.2em] uppercase">
+            © 2026 LOGICAL DETOX LAB / THE BRAIN ORGANIZER
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
