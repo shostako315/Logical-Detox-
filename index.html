@@ -22,6 +22,9 @@
             border-radius: 50%;
             z-index: -1;
         }
+        /* LINE Brand Color */
+        .bg-line { background-color: #06C755; }
+        .bg-line:hover { background-color: #05b34c; }
     </style>
 </head>
 <body class="bg-warm text-slate-700">
@@ -119,7 +122,7 @@
                         <p class="font-bold text-orange-600 mb-1 font-maru">Aさん（50代・主婦）の場合</p>
                         <p class="text-slate-600 italic mb-3">「娘とのやり取りでいつもイライラしちゃって。何が嫌なのか自分でも分からないんです」</p>
                         <p class="text-sm text-slate-500 leading-relaxed">
-                            → 一緒に感情を紐解くと、実は「寂しさ」が原因だったことが判明。30分後には「今度、こう言ってみるね！」と笑顔に。
+                            → 一緒に感情を紐解くと、実は「寂しさ」が原因だったことが判明. 30分後には「今度、こう言ってみるね！」と笑顔に。
                         </p>
                     </div>
                 </div>
@@ -186,12 +189,6 @@
         <div class="max-w-3xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
             <div class="relative">
                 <div class="w-48 h-48 rounded-[3rem] bg-slate-200 overflow-hidden shadow-xl rotate-3">
-                    <!-- 
-                        【写真の差し替え方法】
-                        1. あなたの顔写真を「profile.jpg」という名前で保存します。
-                        2. この index.html と同じフォルダに「profile.jpg」をアップロードしてください。
-                        3. 写真がない場合は、仮のグレー画像が表示されるようになっています。
-                    -->
                     <img src="./profile.jpg" onerror="this.src='https://via.placeholder.com/400x400/e2e8f0/64748b?text=Your+Photo'" alt="タク" class="w-full h-full object-cover">
                 </div>
                 <div class="absolute -bottom-4 -right-4 bg-white p-3 rounded-2xl shadow-lg border border-slate-100">
@@ -199,33 +196,30 @@
                 </div>
             </div>
             <div>
-                <h3 class="text-2xl font-bold mb-4 font-maru">話を聞く人：Eigo</h3>
+                <h3 class="text-2xl font-bold mb-4 font-maru">話を聞く人：タク</h3>
                 <p class="text-slate-600 leading-relaxed mb-4">
                     ビジネスコンサルタントとして難しいビジネス戦略を考えたり、指揮者として100人のオーケストラをまとめたりするのが仕事です。
                 </p>
                 <p class="text-slate-600 leading-relaxed">
-                    でも、本当に得意なのは「誰かの頭の中をスッキリさせて、明日を少しだけ楽しみな気持ちに変えること」。難しい話は抜きにして、楽しくおしゃべりしましょう！
+                    でも、本当に得意なのは**「誰かの頭の中をスッキリさせて、明日を少しだけ楽しみな気持ちに変えること」**。難しい話は抜きにして、楽しくおしゃべりしましょう！
                 </p>
             </div>
         </div>
     </section>
 
-    
     <!-- Footer / Booking -->
     <footer id="booking" class="py-20 text-center px-6">
         <h2 class="text-3xl font-bold mb-10 font-maru underline decoration-orange-300 decoration-8 underline-offset-4">さぁ、モヤモヤを置いていきませんか？</h2>
         
         <div class="max-w-md mx-auto space-y-4">
             <!-- Calendly or Scheduling Link -->
-            <a href="【ここに日程調整URLを入れてね】" class="flex items-center justify-center gap-3 bg-orange-500 text-white px-8 py-5 rounded-3xl text-xl font-bold shadow-xl shadow-orange-200 hover:scale-105 transition-all">
+            <a href="【https://meeting.eeasy.jp/shostako315/online】" class="flex items-center justify-center gap-3 bg-orange-500 text-white px-8 py-5 rounded-3xl text-xl font-bold shadow-xl shadow-orange-200 hover:scale-105 transition-all">
                 <i data-lucide="calendar" class="w-6 h-6"></i>
                 <span>日程を調整する</span>
             </a>
 
             <!-- LINE Official Account Link -->
-            <a href="【ここに公式LINEのURLを入れてね】" class="flex items-center justify-center gap-3 bg-line text-white px-8 py-5 rounded-3xl text-xl font-bold shadow-xl shadow-green-100 hover:scale-105 transition-all">
-                <i data-lucide="message-circle" class="w-6 h-6"></i>
-                <span>公式LINEで相談・登録</span>
+            <a href="https://lin.ee/LuB5W5n"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" height="36" border="0"></a>
             </a>
 
             <p class="text-slate-400 text-sm mt-8">
