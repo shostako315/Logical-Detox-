@@ -33,12 +33,21 @@ import {
   Mic2
 } from 'lucide-react';
 
-// --- Firebase Configuration ---
-const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{"apiKey":"","authDomain":"","projectId":"","storageBucket":"","messagingSenderId":"","appId":""}');
+// --- Firebase Configuration (ご提示いただいた内容に更新済み) ---
+const firebaseConfig = {
+  apiKey: "AIzaSyAoKiYXfiJUCIJ39U9VnKDyWIcZMOHceJ8",
+  authDomain: "logical-detox.firebaseapp.com",
+  projectId: "logical-detox",
+  storageBucket: "logical-detox.firebasestorage.app",
+  messagingSenderId: "477682392007",
+  appId: "1:477682392007:web:46d48db270c74a18ef57e2",
+  measurementId: "G-T6F7C41QMR"
+};
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'logical-detox-app';
+const appId = "logical-detox"; // プロジェクトIDに合わせました
 
 // --- Constants ---
 const TIME_SLOTS = [
@@ -118,7 +127,7 @@ export default function App() {
       setView('success'); 
     } catch (err) {
       console.error(err);
-      alert("予約中にエラーが発生しました。");
+      alert("予約中にエラーが発生しました。Firebaseのルール設定を確認してください。");
     } finally {
       setBookingProcessing(false);
     }
@@ -128,6 +137,7 @@ export default function App() {
     if (!window.confirm("この予約リクエストを取り消しますか？")) return;
     try {
       await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'appointments', id));
+      alert("キャンセルしました。");
     } catch (err) {
       console.error(err);
     }
@@ -150,7 +160,7 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-[#fdfaf6] text-slate-700 font-sans">
+    <div className="min-h-screen bg-[#fdfaf6] text-slate-700 font-sans pb-20">
       
       {/* Header */}
       <header className="sticky top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-orange-100 px-4 py-4">
@@ -183,7 +193,6 @@ export default function App() {
         {/* --- View: Home --- */}
         {view === 'home' && (
           <div className="space-y-24 animate-in fade-in duration-700 pb-10">
-            {/* Hero */}
             <div className="text-center space-y-8 py-10">
               <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
                 <Sparkles size={14} /> Logic & Harmony
@@ -209,7 +218,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* AI vs HUMAN */}
+            {/* AI vs HUMAN Section */}
             <div className="py-12 bg-white rounded-[3rem] p-8 md:p-12 border border-slate-100 shadow-inner">
                 <div className="text-center mb-12">
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-800" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>なぜ、AIではなく「人間」なのか。</h2>
@@ -220,14 +229,14 @@ export default function App() {
                             <div className="bg-slate-100 p-3 rounded-xl text-slate-400 h-fit"><Zap size={24} /></div>
                             <div>
                                 <p className="font-bold text-slate-400 mb-1">AIが得意なこと</p>
-                                <p className="text-sm text-slate-400 leading-relaxed">一般的な正論、情報の要約、データの照合、無機質なロジック提示。</p>
+                                <p className="text-sm text-slate-400 leading-relaxed">一般的な正論、情報の要約、データの照合提示。</p>
                             </div>
                         </div>
                         <div className="flex gap-4 p-6 bg-orange-50 rounded-[2rem] border border-orange-200 shadow-md">
                             <div className="bg-orange-500 p-3 rounded-xl text-white h-fit"><Mic2 size={24} /></div>
                             <div>
                                 <p className="font-bold text-orange-600 mb-1">Eigoにしかできないこと</p>
-                                <p className="text-sm text-orange-900 leading-relaxed font-medium">沈黙の間の「違和感」を捉えること、声のトーンから「本音」を汲み取ること、指揮者のように今のあなたに最適な「調和」を提示すること。</p>
+                                <p className="text-sm text-orange-900 leading-relaxed font-medium">沈黙の間の「違和感」を捉えること、本音を汲み取ること、指揮者のように最適な「調和」を提示すること。</p>
                             </div>
                         </div>
                     </div>
@@ -235,7 +244,6 @@ export default function App() {
                         <h3 className="text-xl font-bold text-slate-800 leading-relaxed" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>
                             「AIは要約する。<br /><span className="text-orange-500 italic underline decoration-orange-200">私は、あなたの可能性を調和させる。</span>」
                         </h3>
-                        <p className="text-slate-500 text-sm leading-loose">AIは過去の言葉を処理しますが、私はあなたの「まだ言葉になっていない願い」を聞き届けます。コンサルティングの鋭いメスと、指揮者の温かいタクト。そんな対話を体験してください。</p>
                     </div>
                 </div>
             </div>
@@ -249,14 +257,14 @@ export default function App() {
                     <div className="bg-white p-8 rounded-[3rem] border border-orange-100 shadow-sm">
                         <span className="text-3xl mb-4 block">🙋‍♀️</span>
                         <p className="font-bold text-orange-600 mb-2">Aさん（50代・主婦）の場合</p>
-                        <p className="text-slate-600 italic mb-4 text-sm leading-loose">「娘とのやり取りでいつもイライラしちゃって。何が嫌なのか自分でも分からないんです」</p>
-                        <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-orange-500">感情を紐解くと、実は「寂しさ」が原因だったことが判明。30分後には「今度こう言ってみるね！」と笑顔になれました。</div>
+                        <p className="text-slate-600 italic mb-4 text-sm leading-loose">「娘とのやり取りでいつもイライラ。何が嫌なのか自分でも分からないんです」</p>
+                        <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-orange-500">感情を紐解くと、実は「寂しさ」が原因。30分後には笑顔になれました。</div>
                     </div>
                     <div className="bg-white p-8 rounded-[3rem] border border-blue-100 shadow-sm">
                         <span className="text-3xl mb-4 block">👨‍💻</span>
                         <p className="font-bold text-blue-600 mb-2">Bさん（30代・会社員）の場合</p>
-                        <p className="text-slate-600 italic mb-4 text-sm leading-loose">「転職したいけど、何から手をつけていいか…。頭の中がゴミ屋敷状態で動けません」</p>
-                        <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-blue-500">思考を棚卸し。強みと不安を仕分けして、明日やるべき「1つのこと」を特定。視界がパッと明るくなりました。</div>
+                        <p className="text-slate-600 italic mb-4 text-sm leading-loose">「転職したいけど、頭の中がゴミ屋敷状態で動けません」</p>
+                        <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-blue-500">強みと不安を仕分けして、明日やるべき「1つのこと」を特定。視界が明るくなりました。</div>
                     </div>
                 </div>
             </div>
@@ -271,17 +279,7 @@ export default function App() {
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-2xl font-bold mb-4 text-slate-800" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>話を聞く人：Eigo</h3>
-                <p className="text-slate-600 leading-relaxed mb-4 text-sm">ビジネスコンサルタントとして戦略を考えたり、指揮者として100人の音をまとめたりするのが仕事です。</p>
-                <p className="text-slate-600 leading-relaxed text-sm font-medium">本当に好きなことは「誰かの頭の中をスッキリさせて、明日を少し楽しみな気持ちに変えること」。楽しくおしゃべりしましょう！</p>
-              </div>
-            </div>
-
-            {/* Price */}
-            <div className="bg-slate-900 text-white p-12 rounded-[3rem] shadow-2xl text-center">
-              <h2 className="text-2xl font-bold mb-8 text-orange-400" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>ご利用料金</h2>
-              <div className="max-w-sm mx-auto space-y-6">
-                <div className="flex justify-between border-b border-slate-700 pb-4 text-lg"><span>さくっと30分</span><span className="font-bold text-orange-400">¥1,500〜</span></div>
-                <div className="flex justify-between border-b border-slate-700 pb-4 text-lg"><span>じっくり60分</span><span className="font-bold text-orange-400">¥3,000〜</span></div>
+                <p className="text-slate-600 leading-relaxed mb-4 text-sm">コンサルタントとして戦略を考え、指揮者として100人の音をまとめる。あなたの思考も心地よく整えます。</p>
               </div>
             </div>
           </div>
@@ -323,8 +321,8 @@ export default function App() {
               <div className="pt-8 border-t border-slate-50">
                 <p className="text-sm font-bold mb-4 flex items-center gap-2"><AlertCircle size={16} className="text-orange-500" /> その他の時間を希望</p>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <input type="text" placeholder="例：22:30から希望、平日午前など" className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500 outline-none" value={customTime} onChange={(e) => setCustomTime(e.target.value)} />
-                  <button disabled={!customTime} onClick={() => setConfirmingSlot(customTime)} className="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold text-sm disabled:opacity-30">相談する</button>
+                  <input type="text" placeholder="例：22:30から希望" className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500 outline-none" value={customTime} onChange={(e) => setCustomTime(e.target.value)} />
+                  <button disabled={!customTime} onClick={() => setConfirmingSlot(customTime)} className="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold text-sm disabled:opacity-30 transition">相談する</button>
                 </div>
               </div>
             </div>
@@ -333,22 +331,13 @@ export default function App() {
             {confirmingSlot && (
               <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
                 <div className="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl space-y-8 animate-in zoom-in-95">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-6"><Calendar size={32} /></div>
-                    <h3 className="text-2xl font-bold mb-2">ご予約の確認</h3>
-                    <p className="text-slate-400 text-sm">以下の内容でリクエストを送信しますか？</p>
+                  <div className="text-center space-y-4">
+                    <h3 className="text-2xl font-bold font-serif">ご予約の確認</h3>
+                    <div className="bg-orange-50 p-6 rounded-2xl font-bold text-lg text-orange-500">{selectedDate.toLocaleDateString('ja-JP')} / {confirmingSlot}〜</div>
+                    <p className="text-sm text-slate-500 italic text-center">※折り返しの返信をもって確定となります。</p>
                   </div>
-                  <div className="bg-slate-50 p-6 rounded-2xl flex items-center justify-between font-bold text-lg">
-                    <span>{selectedDate.toLocaleDateString('ja-JP')}</span>
-                    <span className="text-orange-500">{confirmingSlot}〜</span>
-                  </div>
-                  <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 text-sm text-slate-500 leading-relaxed">
-                    調整が難しい場合もあります。こちらからの**返信をもって確定**となりますのでご了承ください。
-                  </div>
-                  <button onClick={() => handleBook(selectedDate, confirmingSlot, customTime === confirmingSlot)} disabled={bookingProcessing} className="w-full bg-orange-500 text-white py-4 rounded-2xl font-bold text-lg shadow-xl hover:bg-orange-600 disabled:opacity-50">
-                    {bookingProcessing ? "送信中..." : "予約リクエストを送る"}
-                  </button>
-                  <button onClick={() => setConfirmingSlot(null)} className="w-full text-slate-400 font-bold py-2 text-sm">キャンセル</button>
+                  <button onClick={() => handleBook(selectedDate, confirmingSlot, customTime === confirmingSlot)} disabled={bookingProcessing} className="w-full bg-orange-500 text-white py-4 rounded-2xl font-bold text-lg shadow-xl hover:bg-orange-600 transition disabled:opacity-50">リクエストを送る</button>
+                  <button onClick={() => setConfirmingSlot(null)} className="w-full text-slate-400 font-bold py-2 text-sm">戻る</button>
                 </div>
               </div>
             )}
@@ -361,24 +350,20 @@ export default function App() {
             <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-orange-50">
                 <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8"><CheckCircle size={40} /></div>
                 <h2 className="text-3xl font-black text-slate-800 mb-4">リクエスト送信完了！</h2>
-                <p className="text-slate-500 mb-8 leading-relaxed">スケジュールの確認を行い、折り返しご連絡いたします。</p>
-                <div className="bg-orange-50 p-6 rounded-2xl mb-10 font-bold text-xl text-orange-600">{lastBooking?.date} / {lastBooking?.time}</div>
                 <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] space-y-6">
                     <p className="text-lg font-bold flex items-center justify-center gap-2"><Sparkles size={20} className="text-orange-400" /> 公式LINEの登録が必要です</p>
-                    <p className="text-sm opacity-80 leading-relaxed">Zoomリンクの送付や日程確定は、公式LINEで行います。必ず友だち追加をお願いいたします。</p>
                     <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 bg-[#06C755] text-white px-8 py-5 rounded-2xl text-xl font-black hover:scale-105 transition-all shadow-xl">
                         <MessageCircle size={24} /> <span>公式LINEを登録する</span>
                     </a>
                 </div>
             </div>
-            <button onClick={() => setView('home')} className="text-slate-400 text-sm font-bold underline">TOPに戻る</button>
           </div>
         )}
 
         {/* --- View: My Bookings --- */}
         {view === 'my-bookings' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-            <h2 className="text-3xl font-bold mb-10 text-center" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>あなたの予約状況</h2>
+            <h2 className="text-3xl font-bold mb-10 text-center font-serif italic">あなたの予約状況</h2>
             <div className="space-y-4">
               {appointments.filter(a => a.userId === user?.uid).map(booking => (
                 <div key={booking.id} className="bg-white p-8 rounded-[2rem] shadow-sm border border-orange-50 flex flex-col md:flex-row justify-between items-center gap-6">
