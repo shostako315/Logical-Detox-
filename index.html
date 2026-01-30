@@ -34,7 +34,7 @@ import {
 } from 'lucide-react';
 
 // --- Firebase Configuration ---
-const firebaseConfig = JSON.parse(__firebase_config);
+const firebaseConfig = JSON.parse(__app_id ? __firebase_config : '{"apiKey":"","authDomain":"","projectId":"","storageBucket":"","messagingSenderId":"","appId":""}');
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -165,27 +165,27 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-[#fdfaf6] text-slate-700 font-sans pb-20">
+    <div className="min-h-screen bg-[#fdfaf6] text-slate-700 font-sans pb-24">
       
-      {/* Header */}
-      <header className="sticky top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-orange-100 px-4 md:px-6 py-4">
-        <div className="max-w-5xl mx-auto flex justify-between items-center">
-          <button onClick={() => setView('home')} className="flex items-center gap-2">
+      {/* Header - 崩れ防止のためにw-fullとwhitespace-nowrapを適用 */}
+      <header className="sticky top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-orange-100 px-4 py-4">
+        <div className="max-w-5xl mx-auto flex flex-row justify-between items-center w-full">
+          <button onClick={() => setView('home')} className="flex items-center gap-2 flex-shrink-0">
             <div className="bg-orange-500 p-1.5 rounded-lg text-white shadow-sm">
               <Coffee size={20} />
             </div>
-            <span className="text-lg md:text-xl font-bold font-serif text-slate-800 tracking-tight">頭の整理屋さん</span>
+            <span className="text-lg md:text-xl font-bold font-serif text-slate-800 whitespace-nowrap">頭の整理屋さん</span>
           </button>
-          <div className="flex items-center gap-3 md:gap-6">
+          <div className="flex items-center gap-3 md:gap-6 ml-4">
             <button 
               onClick={() => setView('my-bookings')}
-              className={`text-xs md:text-sm font-bold transition ${view === 'my-bookings' ? 'text-orange-600' : 'text-slate-500 hover:text-orange-500'}`}
+              className={`text-xs md:text-sm font-bold transition whitespace-nowrap ${view === 'my-bookings' ? 'text-orange-600' : 'text-slate-500 hover:text-orange-500'}`}
             >
               予約の確認
             </button>
             <button 
               onClick={() => setView('calendar')}
-              className="bg-orange-500 text-white px-5 md:px-7 py-2.5 rounded-full text-xs md:text-sm font-bold shadow-lg shadow-orange-100 hover:bg-orange-600 transition active:scale-95"
+              className="bg-orange-500 text-white px-4 md:px-7 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold shadow-lg shadow-orange-100 hover:bg-orange-600 transition active:scale-95 whitespace-nowrap"
             >
               予約する
             </button>
@@ -193,7 +193,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 pt-12">
+      <main className="max-w-5xl mx-auto px-6 pt-12">
         
         {/* --- View: Home --- */}
         {view === 'home' && (
@@ -239,45 +239,44 @@ export default function App() {
               ))}
             </div>
 
-            {/* NEW USP: AI vs HUMAN SECTION */}
+            {/* AI vs HUMAN SECTION */}
             <div className="py-10 bg-white/50 rounded-[3rem] p-8 md:p-12 border border-slate-100 shadow-inner">
                 <div className="text-center mb-12 space-y-2">
                     <h2 className="text-2xl md:text-3xl font-bold font-serif italic text-slate-800">なぜ、AIではなく「人間」なのか。</h2>
-                    <p className="text-slate-400 text-sm">AIには踏み込めない、感情と論理の深淵へ。</p>
                 </div>
                 
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="space-y-6">
-                        <div className="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                        <div className="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm opacity-60">
                             <div className="bg-slate-100 p-3 rounded-xl text-slate-400 h-fit">
                                 <Zap size={24} />
                             </div>
                             <div>
                                 <p className="font-bold text-slate-400 mb-1">AIが得意なこと</p>
-                                <p className="text-sm text-slate-400 leading-relaxed">
-                                    一般的な正論、情報の要約、既存データの照合、無機質なロジックの提示。
+                                <p className="text-sm text-slate-400 leading-relaxed italic">
+                                    一般的な正論、情報の要約、データの照合、無機質なロジック。
                                 </p>
                             </div>
                         </div>
-                        <div className="flex gap-4 p-6 bg-orange-50 rounded-[2rem] border border-orange-200 shadow-md transform rotate-1 scale-105">
+                        <div className="flex gap-4 p-6 bg-orange-50 rounded-[2rem] border border-orange-200 shadow-md">
                             <div className="bg-orange-500 p-3 rounded-xl text-white h-fit">
                                 <Mic2 size={24} />
                             </div>
                             <div>
                                 <p className="font-bold text-orange-600 mb-1">Eigoにしかできないこと</p>
                                 <p className="text-sm text-orange-900 leading-relaxed font-medium">
-                                    沈黙の間の「違和感」を捉えること、あなたの声のトーンから「本音」を汲み取ること、そして指揮者のように今のあなたに最適な「調和（バランス）」を提示すること。
+                                    沈黙の間の「違和感」を捉えること、声のトーンから「本音」を汲み取ること、そして指揮者のように今のあなたに最適な「調律」を提示すること。
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <div className="p-8 text-center md:text-left space-y-6">
+                    <div className="p-4 space-y-4">
                         <h3 className="text-xl font-bold text-slate-800 leading-relaxed">
                             「AIは要約する。<br />
-                            <span className="text-orange-500 italic underline decoration-orange-200">私は、あなたの可能性を調律する。</span>」
+                            <span className="text-orange-500 italic underline decoration-orange-200">私は、あなたの可能性を調和させる。</span>」
                         </h3>
                         <p className="text-slate-500 text-sm leading-loose">
-                            AIはあなたの過去の言葉を処理しますが、私はあなたの「まだ言葉になっていない願い」を聞き届けます。コンサルティングの鋭いメスと、指揮者の温かいタクトを同時に振るう。そんな対話を体験してください。
+                            AIは過去の言葉を処理しますが、私はあなたの「まだ言葉になっていない願い」を聞き届けます。コンサルティングの鋭いメスと、指揮者の温かいタクト。そんな対話を体験してください。
                         </p>
                     </div>
                 </div>
@@ -292,28 +291,26 @@ export default function App() {
                     </h2>
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
-                    <div className="bg-white p-8 rounded-[3rem] border border-orange-100 shadow-sm relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-20 h-20 bg-orange-50 rounded-bl-[3rem] -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div className="bg-white p-8 rounded-[3rem] border border-orange-100 shadow-sm relative overflow-hidden">
                         <div className="relative">
                             <span className="text-3xl mb-4 block">🙋‍♀️</span>
                             <p className="font-bold text-orange-600 mb-2 font-serif">Aさん（50代・主婦）の場合</p>
                             <p className="text-slate-600 italic mb-4 text-sm leading-loose">
                                 「娘とのやり取りでいつもイライラしちゃって。何が嫌なのか自分でも分からないんです」
                             </p>
-                            <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-orange-500">
+                            <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-orange-500 shadow-inner">
                                 一緒に感情を紐解くと、実は「寂しさ」が原因だったことが判明。30分後には「今度、こう言ってみるね！」と笑顔になれました。
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white p-8 rounded-[3rem] border border-blue-100 shadow-sm relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-bl-[3rem] -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div className="bg-white p-8 rounded-[3rem] border border-blue-100 shadow-sm relative overflow-hidden">
                         <div className="relative">
                             <span className="text-3xl mb-4 block">👨‍💻</span>
                             <p className="font-bold text-blue-600 mb-2 font-serif">Bさん（30代・会社員）の場合</p>
                             <p className="text-slate-600 italic mb-4 text-sm leading-loose">
                                 「転職したいけど、何から手をつけていいか…。頭の中がゴミ屋敷状態で、一歩も動けません」
                             </p>
-                            <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-blue-500">
+                            <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-blue-500 shadow-inner">
                                 コンサルの手法で思考を棚卸し。強みと不安を仕分けして、明日やるべき「1つのこと」を特定。視界がパッと明るくなりました。
                             </div>
                         </div>
@@ -393,7 +390,7 @@ export default function App() {
                         isSelected ? 'bg-orange-500 text-white shadow-lg scale-105' : 'bg-slate-50 text-slate-500 hover:bg-orange-50'
                       }`}
                     >
-                      <span className="text-xs uppercase font-bold mb-1">{date.toLocaleDateString('ja-JP', { weekday: 'short' })}</span>
+                      <span className="text-xs uppercase font-bold mb-1 whitespace-nowrap">{date.toLocaleDateString('ja-JP', { weekday: 'short' })}</span>
                       <span className="text-2xl font-black">{date.getDate()}</span>
                     </button>
                   );
@@ -436,7 +433,7 @@ export default function App() {
                   <input 
                     type="text" 
                     placeholder="例：22:30から希望、平日午前など"
-                    className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500"
+                    className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500 outline-none shadow-inner"
                     value={customTime}
                     onChange={(e) => setCustomTime(e.target.value)}
                   />
@@ -472,7 +469,7 @@ export default function App() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex gap-3 text-sm text-slate-500 leading-relaxed bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                    <div className="flex gap-3 text-sm text-slate-500 leading-relaxed bg-blue-50/50 p-4 rounded-xl border border-blue-100 shadow-inner">
                       <AlertCircle size={20} className="text-blue-500 flex-shrink-0 mt-0.5" />
                       <p>スケジュールの都合により、**調整が難しい可能性もあります。** こちらからの返信をもって予約確定となりますのでご了承ください。</p>
                     </div>
@@ -512,12 +509,12 @@ export default function App() {
                         仮予約を受け付けました。スケジュールの確認を行い、折り返しご連絡いたします。
                     </p>
                     
-                    <div className="bg-orange-50 p-6 rounded-2xl mb-8 border border-orange-100">
+                    <div className="bg-orange-50 p-6 rounded-2xl mb-8 border border-orange-100 shadow-inner">
                         <p className="text-xs text-orange-400 font-bold mb-2">リクエスト内容</p>
                         <p className="text-xl font-bold text-orange-600">{lastBooking?.date} / {lastBooking?.time}</p>
                     </div>
 
-                    <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] space-y-6">
+                    <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] space-y-6 shadow-2xl">
                         <p className="text-lg font-bold flex items-center justify-center gap-2">
                             <Sparkles size={20} className="text-orange-400" />
                             公式LINEの登録が必要です
@@ -545,7 +542,7 @@ export default function App() {
             <h2 className="text-3xl font-bold mb-10 text-center font-serif italic">あなたの予約状況</h2>
             <div className="space-y-4">
               {appointments.filter(a => a.userId === user.uid).length === 0 ? (
-                <div className="bg-white p-16 rounded-[3rem] text-center text-slate-400 border-2 border-dashed border-slate-100">
+                <div className="bg-white p-16 rounded-[3rem] text-center text-slate-400 border-2 border-dashed border-slate-100 shadow-inner">
                   <p>現在、予約のリクエストはありません。</p>
                 </div>
               ) : (
@@ -564,7 +561,7 @@ export default function App() {
                     </div>
                     <button 
                       onClick={() => handleCancel(booking.id)}
-                      className="text-red-400 hover:text-red-500 font-bold text-sm px-4 py-2"
+                      className="text-red-400 hover:text-red-500 font-bold text-sm px-4 py-2 transition"
                     >
                       リクエストを取り消す
                     </button>
