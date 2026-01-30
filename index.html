@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { initializeApp } from 'firebase/app';
 import { 
   getAuth, 
@@ -34,7 +34,7 @@ import {
 } from 'lucide-react';
 
 // --- Firebase Configuration ---
-const firebaseConfig = JSON.parse(__app_id ? __firebase_config : '{"apiKey":"","authDomain":"","projectId":"","storageBucket":"","messagingSenderId":"","appId":""}');
+const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{"apiKey":"","authDomain":"","projectId":"","storageBucket":"","messagingSenderId":"","appId":""}');
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -56,7 +56,6 @@ export default function App() {
   const [view, setView] = useState('home'); 
   const [bookingProcessing, setBookingProcessing] = useState(false);
   const [lastBooking, setLastBooking] = useState(null);
-  
   const [confirmingSlot, setConfirmingSlot] = useState(null); 
   const [customTime, setCustomTime] = useState("");
 
@@ -85,13 +84,11 @@ export default function App() {
   // (2) データ取得
   useEffect(() => {
     if (!user) return;
-
     const q = collection(db, 'artifacts', appId, 'public', 'data', 'appointments');
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setAppointments(data);
     }, (err) => console.error("Firestore Error:", err));
-
     return () => unsubscribe();
   }, [user]);
 
@@ -103,16 +100,6 @@ export default function App() {
     const dateStr = date.toISOString().split('T')[0];
     const bookingId = isCustom ? `custom_${user.uid}_${Date.now()}` : `${dateStr}_${time}`;
     
-    if (!isCustom) {
-      const isTaken = appointments.find(a => a.id === bookingId);
-      if (isTaken) {
-        alert("申し訳ありません、この時間は既に予約されています。");
-        setBookingProcessing(false);
-        setConfirmingSlot(null);
-        return;
-      }
-    }
-
     try {
       const bookingData = {
         userId: user.uid,
@@ -125,7 +112,6 @@ export default function App() {
       };
 
       await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'appointments', bookingId), bookingData);
-      
       setLastBooking(bookingData);
       setConfirmingSlot(null);
       setCustomTime("");
@@ -139,24 +125,23 @@ export default function App() {
   };
 
   const handleCancel = async (id) => {
-    if (!window.confirm("この予約を取り消してもよろしいですか？")) return;
+    if (!window.confirm("この予約リクエストを取り消しますか？")) return;
     try {
       await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'appointments', id));
-      alert("キャンセルしました。");
     } catch (err) {
       console.error(err);
     }
   };
 
-  const getDates = () => {
-    const dates = [];
+  const dates = useMemo(() => {
+    const dts = [];
     for (let i = 0; i < DAYS_TO_SHOW; i++) {
       const d = new Date();
       d.setDate(d.getDate() + i);
-      dates.push(d);
+      dts.push(d);
     }
-    return dates;
-  };
+    return dts;
+  }, []);
 
   if (loading) return (
     <div className="flex h-screen items-center justify-center bg-[#fdfaf6]">
@@ -165,17 +150,17 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-[#fdfaf6] text-slate-700 font-sans pb-24">
+    <div className="min-h-screen bg-[#fdfaf6] text-slate-700 font-sans">
       
-      {/* Header - 崩れ防止のためにw-fullとwhitespace-nowrapを適用 */}
+      {/* Header */}
       <header className="sticky top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-orange-100 px-4 py-4">
         <div className="max-w-5xl mx-auto flex flex-row justify-between items-center w-full">
-          <button onClick={() => setView('home')} className="flex items-center gap-2 flex-shrink-0">
+          <div onClick={() => setView('home')} className="flex items-center gap-2 cursor-pointer flex-shrink-0">
             <div className="bg-orange-500 p-1.5 rounded-lg text-white shadow-sm">
               <Coffee size={20} />
             </div>
-            <span className="text-lg md:text-xl font-bold font-serif text-slate-800 whitespace-nowrap">頭の整理屋さん</span>
-          </button>
+            <span className="text-lg md:text-xl font-bold text-slate-800 whitespace-nowrap" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>頭の整理屋さん</span>
+          </div>
           <div className="flex items-center gap-3 md:gap-6 ml-4">
             <button 
               onClick={() => setView('my-bookings')}
@@ -193,7 +178,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 pt-12">
+      <main className="max-w-5xl mx-auto px-6 py-12">
         
         {/* --- View: Home --- */}
         {view === 'home' && (
@@ -203,7 +188,7 @@ export default function App() {
               <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
                 <Sparkles size={14} /> Logic & Harmony
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-slate-800 leading-tight font-serif">
+              <h1 className="text-4xl md:text-6xl font-bold text-slate-800 leading-tight" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>
                 話すだけで、<br />
                 <span className="text-orange-500 underline decoration-orange-200 decoration-wavy underline-offset-8">脳内デトックス。</span>
               </h1>
@@ -218,66 +203,39 @@ export default function App() {
                 >
                   空き枠を見て予約する
                 </button>
-                <a href={LINE_URL} target="_blank" className="bg-[#06C755] text-white px-10 py-5 rounded-[2rem] text-xl font-bold flex items-center justify-center gap-2 shadow-xl hover:opacity-90 transition">
+                <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className="bg-[#06C755] text-white px-10 py-5 rounded-[2rem] text-xl font-bold flex items-center justify-center gap-2 shadow-xl hover:opacity-90 transition">
                   <MessageCircle size={24} /> 公式LINEで相談
                 </a>
               </div>
             </div>
 
-            {/* Service Pillars */}
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { icon: <MessageCircle className="text-orange-500" />, title: "誰かに聞いてほしいだけ", desc: "答えはいらないけど、誰かに話してスッキリしたい時に。" },
-                { icon: <CheckCircle className="text-blue-500" />, title: "やることが多すぎる時", desc: "優先順位をコンサルの手法で「えいやっ」と決めます。" },
-                { icon: <Calendar className="text-green-500" />, title: "一歩目を決めたい時", desc: "あなたの「やりたい」を形にする地図を作ります。" },
-              ].map((item, i) => (
-                <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-orange-50 hover:shadow-md transition">
-                  <div className="mb-5">{item.icon}</div>
-                  <h3 className="font-bold text-lg mb-3">{item.title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+            {/* AI vs HUMAN */}
+            <div className="py-12 bg-white rounded-[3rem] p-8 md:p-12 border border-slate-100 shadow-inner">
+                <div className="text-center mb-12">
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-800" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>なぜ、AIではなく「人間」なのか。</h2>
                 </div>
-              ))}
-            </div>
-
-            {/* AI vs HUMAN SECTION */}
-            <div className="py-10 bg-white/50 rounded-[3rem] p-8 md:p-12 border border-slate-100 shadow-inner">
-                <div className="text-center mb-12 space-y-2">
-                    <h2 className="text-2xl md:text-3xl font-bold font-serif italic text-slate-800">なぜ、AIではなく「人間」なのか。</h2>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="space-y-6">
                         <div className="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm opacity-60">
-                            <div className="bg-slate-100 p-3 rounded-xl text-slate-400 h-fit">
-                                <Zap size={24} />
-                            </div>
+                            <div className="bg-slate-100 p-3 rounded-xl text-slate-400 h-fit"><Zap size={24} /></div>
                             <div>
                                 <p className="font-bold text-slate-400 mb-1">AIが得意なこと</p>
-                                <p className="text-sm text-slate-400 leading-relaxed italic">
-                                    一般的な正論、情報の要約、データの照合、無機質なロジック。
-                                </p>
+                                <p className="text-sm text-slate-400 leading-relaxed">一般的な正論、情報の要約、データの照合、無機質なロジック提示。</p>
                             </div>
                         </div>
                         <div className="flex gap-4 p-6 bg-orange-50 rounded-[2rem] border border-orange-200 shadow-md">
-                            <div className="bg-orange-500 p-3 rounded-xl text-white h-fit">
-                                <Mic2 size={24} />
-                            </div>
+                            <div className="bg-orange-500 p-3 rounded-xl text-white h-fit"><Mic2 size={24} /></div>
                             <div>
                                 <p className="font-bold text-orange-600 mb-1">Eigoにしかできないこと</p>
-                                <p className="text-sm text-orange-900 leading-relaxed font-medium">
-                                    沈黙の間の「違和感」を捉えること、声のトーンから「本音」を汲み取ること、そして指揮者のように今のあなたに最適な「調律」を提示すること。
-                                </p>
+                                <p className="text-sm text-orange-900 leading-relaxed font-medium">沈黙の間の「違和感」を捉えること、声のトーンから「本音」を汲み取ること、指揮者のように今のあなたに最適な「調和」を提示すること。</p>
                             </div>
                         </div>
                     </div>
-                    <div className="p-4 space-y-4">
-                        <h3 className="text-xl font-bold text-slate-800 leading-relaxed">
-                            「AIは要約する。<br />
-                            <span className="text-orange-500 italic underline decoration-orange-200">私は、あなたの可能性を調和させる。</span>」
+                    <div className="space-y-4">
+                        <h3 className="text-xl font-bold text-slate-800 leading-relaxed" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>
+                            「AIは要約する。<br /><span className="text-orange-500 italic underline decoration-orange-200">私は、あなたの可能性を調和させる。</span>」
                         </h3>
-                        <p className="text-slate-500 text-sm leading-loose">
-                            AIは過去の言葉を処理しますが、私はあなたの「まだ言葉になっていない願い」を聞き届けます。コンサルティングの鋭いメスと、指揮者の温かいタクト。そんな対話を体験してください。
-                        </p>
+                        <p className="text-slate-500 text-sm leading-loose">AIは過去の言葉を処理しますが、私はあなたの「まだ言葉になっていない願い」を聞き届けます。コンサルティングの鋭いメスと、指揮者の温かいタクト。そんな対話を体験してください。</p>
                     </div>
                 </div>
             </div>
@@ -285,87 +243,46 @@ export default function App() {
             {/* Use Case Stories */}
             <div className="space-y-10">
                 <div className="text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold font-serif italic flex items-center justify-center gap-3">
-                        <Users className="text-orange-500" />
-                        例えば、こんな感じで進みます
-                    </h2>
+                    <h2 className="text-2xl md:text-3xl font-bold flex items-center justify-center gap-3" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}><Users className="text-orange-500" /> 例えば、こんな時に。</h2>
                 </div>
-                <div className="grid md:grid-cols-2 gap-6">
-                    <div className="bg-white p-8 rounded-[3rem] border border-orange-100 shadow-sm relative overflow-hidden">
-                        <div className="relative">
-                            <span className="text-3xl mb-4 block">🙋‍♀️</span>
-                            <p className="font-bold text-orange-600 mb-2 font-serif">Aさん（50代・主婦）の場合</p>
-                            <p className="text-slate-600 italic mb-4 text-sm leading-loose">
-                                「娘とのやり取りでいつもイライラしちゃって。何が嫌なのか自分でも分からないんです」
-                            </p>
-                            <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-orange-500 shadow-inner">
-                                一緒に感情を紐解くと、実は「寂しさ」が原因だったことが判明。30分後には「今度、こう言ってみるね！」と笑顔になれました。
-                            </div>
-                        </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                    <div className="bg-white p-8 rounded-[3rem] border border-orange-100 shadow-sm">
+                        <span className="text-3xl mb-4 block">🙋‍♀️</span>
+                        <p className="font-bold text-orange-600 mb-2">Aさん（50代・主婦）の場合</p>
+                        <p className="text-slate-600 italic mb-4 text-sm leading-loose">「娘とのやり取りでいつもイライラしちゃって。何が嫌なのか自分でも分からないんです」</p>
+                        <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-orange-500">感情を紐解くと、実は「寂しさ」が原因だったことが判明。30分後には「今度こう言ってみるね！」と笑顔になれました。</div>
                     </div>
-                    <div className="bg-white p-8 rounded-[3rem] border border-blue-100 shadow-sm relative overflow-hidden">
-                        <div className="relative">
-                            <span className="text-3xl mb-4 block">👨‍💻</span>
-                            <p className="font-bold text-blue-600 mb-2 font-serif">Bさん（30代・会社員）の場合</p>
-                            <p className="text-slate-600 italic mb-4 text-sm leading-loose">
-                                「転職したいけど、何から手をつけていいか…。頭の中がゴミ屋敷状態で、一歩も動けません」
-                            </p>
-                            <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-blue-500 shadow-inner">
-                                コンサルの手法で思考を棚卸し。強みと不安を仕分けして、明日やるべき「1つのこと」を特定。視界がパッと明るくなりました。
-                            </div>
-                        </div>
+                    <div className="bg-white p-8 rounded-[3rem] border border-blue-100 shadow-sm">
+                        <span className="text-3xl mb-4 block">👨‍💻</span>
+                        <p className="font-bold text-blue-600 mb-2">Bさん（30代・会社員）の場合</p>
+                        <p className="text-slate-600 italic mb-4 text-sm leading-loose">「転職したいけど、何から手をつけていいか…。頭の中がゴミ屋敷状態で動けません」</p>
+                        <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-blue-500">思考を棚卸し。強みと不安を仕分けして、明日やるべき「1つのこと」を特定。視界がパッと明るくなりました。</div>
                     </div>
                 </div>
             </div>
 
-            {/* Profile Section */}
+            {/* Profile */}
             <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-10">
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <div className="w-40 h-40 rounded-[2.5rem] bg-slate-200 overflow-hidden shadow-xl rotate-3">
-                  <img src="./profile.jpg" onerror="this.src='https://via.placeholder.com/400x400/e2e8f0/64748b?text=Your+Photo'" alt="Eigo" className="w-full h-full object-cover" />
+                  <img src="./profile.jpg" onerror="this.src='https://via.placeholder.com/400x400/e2e8f0/64748b?text=Photo'" alt="Eigo" className="w-full h-full object-cover" />
                 </div>
-                <div className="absolute -bottom-4 -right-4 bg-white p-2 rounded-xl shadow-lg border border-slate-50">
-                  <span className="text-2xl">🎼</span>
-                </div>
+                <div className="absolute -bottom-2 -right-2 bg-white p-2 rounded-xl shadow-lg border border-slate-50"><span className="text-2xl">🎼</span></div>
               </div>
               <div className="flex-1 text-center md:text-left">
-                <h3 className="text-2xl font-bold mb-4 font-serif text-slate-800">話を聞く人：Eigo</h3>
-                <p className="text-slate-600 leading-relaxed mb-4 text-sm md:text-base">
-                  ビジネスコンサルタントとして大企業の難しいビジネス戦略を考えたり、指揮者として100人のオーケストラをまとめたりするのが仕事です。
-                </p>
-                <p className="text-slate-600 leading-relaxed text-sm md:text-base font-medium">
-                  でも、本当に好きなことは「誰かの頭の中をスッキリさせて、明日を少しだけ楽しみな気持ちに変えること」。難しい話は抜きにして、楽しくおしゃべりしましょう！
-                </p>
+                <h3 className="text-2xl font-bold mb-4 text-slate-800" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>話を聞く人：Eigo</h3>
+                <p className="text-slate-600 leading-relaxed mb-4 text-sm">ビジネスコンサルタントとして戦略を考えたり、指揮者として100人の音をまとめたりするのが仕事です。</p>
+                <p className="text-slate-600 leading-relaxed text-sm font-medium">本当に好きなことは「誰かの頭の中をスッキリさせて、明日を少し楽しみな気持ちに変えること」。楽しくおしゃべりしましょう！</p>
               </div>
             </div>
 
-            {/* Pricing Card */}
-            <div className="bg-slate-900 text-white p-12 rounded-[3rem] shadow-2xl text-center relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-32 h-32 bg-orange-500/10 rounded-full -ml-16 -mt-16"></div>
-              <h2 className="text-2xl font-bold mb-8 text-orange-400">ご利用料金</h2>
+            {/* Price */}
+            <div className="bg-slate-900 text-white p-12 rounded-[3rem] shadow-2xl text-center">
+              <h2 className="text-2xl font-bold mb-8 text-orange-400" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>ご利用料金</h2>
               <div className="max-w-sm mx-auto space-y-6">
-                <div className="flex justify-between border-b border-slate-700 pb-4"><span>30分コース</span><span className="font-bold text-orange-400">¥1,500〜</span></div>
-                <div className="flex justify-between border-b border-slate-700 pb-4"><span>60分コース</span><span className="font-bold text-orange-400">¥3,000〜</span></div>
+                <div className="flex justify-between border-b border-slate-700 pb-4 text-lg"><span>さくっと30分</span><span className="font-bold text-orange-400">¥1,500〜</span></div>
+                <div className="flex justify-between border-b border-slate-700 pb-4 text-lg"><span>じっくり60分</span><span className="font-bold text-orange-400">¥3,000〜</span></div>
               </div>
-              <p className="mt-8 text-xs text-slate-400 italic">※お支払いはご予約確定後の案内となります。</p>
-            </div>
-
-            {/* Final CTA */}
-            <div className="text-center space-y-10 py-10 border-t border-slate-100">
-                <h2 className="text-3xl font-bold font-serif italic underline decoration-orange-300 decoration-8 underline-offset-4">さぁ、モヤモヤを置いていきませんか？</h2>
-                <div className="max-w-md mx-auto space-y-4">
-                    <button 
-                      onClick={() => setView('calendar')}
-                      className="w-full flex items-center justify-center gap-3 bg-orange-500 text-white px-8 py-6 rounded-[2rem] text-xl font-bold shadow-xl shadow-orange-200 hover:scale-105 transition-all"
-                    >
-                        <Calendar size={24} />
-                        <span>予約する</span>
-                    </button>
-                    <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 bg-[#06C755] text-white px-8 py-6 rounded-[2rem] text-xl font-bold shadow-xl shadow-green-100 hover:scale-105 transition-all">
-                        <MessageCircle size={24} />
-                        <span>公式LINEで相談・登録</span>
-                    </a>
-                </div>
             </div>
           </div>
         )}
@@ -374,23 +291,17 @@ export default function App() {
         {view === 'calendar' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold font-serif italic mb-2">日時を選択</h2>
+              <h2 className="text-3xl font-bold mb-2" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>日時を選択</h2>
               <p className="text-slate-400 text-sm">17:00以降の30分単位で選択いただけます</p>
             </div>
             
-            <div className="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-2xl border border-orange-50 relative">
+            <div className="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-2xl border border-orange-50">
               <div className="flex overflow-x-auto gap-4 pb-6 mb-8 border-b border-slate-50 scrollbar-hide">
-                {getDates().map((date, i) => {
+                {dates.map((date, i) => {
                   const isSelected = selectedDate.toDateString() === date.toDateString();
                   return (
-                    <button 
-                      key={i}
-                      onClick={() => setSelectedDate(date)}
-                      className={`flex-shrink-0 w-20 py-5 rounded-3xl flex flex-col items-center transition-all ${
-                        isSelected ? 'bg-orange-500 text-white shadow-lg scale-105' : 'bg-slate-50 text-slate-500 hover:bg-orange-50'
-                      }`}
-                    >
-                      <span className="text-xs uppercase font-bold mb-1 whitespace-nowrap">{date.toLocaleDateString('ja-JP', { weekday: 'short' })}</span>
+                    <button key={i} onClick={() => setSelectedDate(date)} className={`flex-shrink-0 w-20 py-5 rounded-3xl flex flex-col items-center transition-all ${isSelected ? 'bg-orange-500 text-white shadow-lg' : 'bg-slate-50 text-slate-500'}`}>
+                      <span className="text-xs font-bold mb-1">{date.toLocaleDateString('ja-JP', { weekday: 'short' })}</span>
                       <span className="text-2xl font-black">{date.getDate()}</span>
                     </button>
                   );
@@ -400,96 +311,44 @@ export default function App() {
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-10">
                 {TIME_SLOTS.map(time => {
                   const dateStr = selectedDate.toISOString().split('T')[0];
-                  const bookingId = `${dateStr}_${time}`;
-                  const isTaken = appointments.find(a => a.id === bookingId);
-                  const isMine = isTaken && isTaken.userId === user.uid;
-
+                  const isTaken = appointments.find(a => a.id === `${dateStr}_${time}`);
                   return (
-                    <button
-                      key={time}
-                      disabled={isTaken}
-                      onClick={() => setConfirmingSlot(time)}
-                      className={`group py-4 px-2 rounded-2xl font-bold text-center border-2 transition-all relative overflow-hidden ${
-                        isMine ? 'bg-orange-100 border-orange-300 text-orange-700' :
-                        isTaken ? 'bg-slate-50 border-transparent text-slate-300 cursor-not-allowed opacity-50' :
-                        'bg-white border-slate-100 hover:border-orange-500 hover:bg-orange-500 hover:text-white'
-                      }`}
-                    >
-                      <div className="flex flex-col items-center gap-1">
-                        <Clock size={16} />
-                        <span className="text-base">{time}</span>
-                      </div>
+                    <button key={time} disabled={isTaken} onClick={() => setConfirmingSlot(time)} className={`py-4 px-2 rounded-2xl font-bold text-center border-2 transition-all ${isTaken ? 'bg-slate-50 text-slate-300 border-transparent cursor-not-allowed' : 'bg-white border-slate-100 hover:border-orange-500 hover:text-orange-500'}`}>
+                      {time}
                     </button>
                   );
                 })}
               </div>
 
               <div className="pt-8 border-t border-slate-50">
-                <p className="text-sm font-bold mb-4 flex items-center gap-2">
-                  <AlertCircle size={16} className="text-orange-500" />
-                  その他の時間を希望する場合
-                </p>
+                <p className="text-sm font-bold mb-4 flex items-center gap-2"><AlertCircle size={16} className="text-orange-500" /> その他の時間を希望</p>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <input 
-                    type="text" 
-                    placeholder="例：22:30から希望、平日午前など"
-                    className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500 outline-none shadow-inner"
-                    value={customTime}
-                    onChange={(e) => setCustomTime(e.target.value)}
-                  />
-                  <button 
-                    disabled={!customTime}
-                    onClick={() => setConfirmingSlot(customTime)}
-                    className="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold text-sm disabled:opacity-30 flex items-center justify-center gap-2"
-                  >
-                    <Send size={16} />
-                    この時間で相談する
-                  </button>
+                  <input type="text" placeholder="例：22:30から希望、平日午前など" className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500 outline-none" value={customTime} onChange={(e) => setCustomTime(e.target.value)} />
+                  <button disabled={!customTime} onClick={() => setConfirmingSlot(customTime)} className="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold text-sm disabled:opacity-30">相談する</button>
                 </div>
               </div>
             </div>
 
+            {/* Confirm Modal */}
             {confirmingSlot && (
-              <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-                <div className="bg-white w-full max-w-md rounded-[2.5rem] p-8 md:p-10 shadow-2xl space-y-8 animate-in zoom-in-95 duration-300">
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+                <div className="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl space-y-8 animate-in zoom-in-95">
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Calendar size={32} />
-                    </div>
-                    <h3 className="text-2xl font-bold mb-2 font-serif">ご予約の確認</h3>
-                    <p className="text-slate-400">以下の内容でリクエストを送信しますか？</p>
+                    <div className="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-6"><Calendar size={32} /></div>
+                    <h3 className="text-2xl font-bold mb-2">ご予約の確認</h3>
+                    <p className="text-slate-400 text-sm">以下の内容でリクエストを送信しますか？</p>
                   </div>
-
-                  <div className="bg-slate-50 p-6 rounded-2xl space-y-2">
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest text-center">予約日時</p>
-                    <div className="flex items-center justify-between font-bold text-lg">
-                      <span>{selectedDate.toLocaleDateString('ja-JP')}</span>
-                      <span className="text-orange-500">{confirmingSlot} 〜</span>
-                    </div>
+                  <div className="bg-slate-50 p-6 rounded-2xl flex items-center justify-between font-bold text-lg">
+                    <span>{selectedDate.toLocaleDateString('ja-JP')}</span>
+                    <span className="text-orange-500">{confirmingSlot}〜</span>
                   </div>
-
-                  <div className="space-y-4">
-                    <div className="flex gap-3 text-sm text-slate-500 leading-relaxed bg-blue-50/50 p-4 rounded-xl border border-blue-100 shadow-inner">
-                      <AlertCircle size={20} className="text-blue-500 flex-shrink-0 mt-0.5" />
-                      <p>スケジュールの都合により、**調整が難しい可能性もあります。** こちらからの返信をもって予約確定となりますのでご了承ください。</p>
-                    </div>
+                  <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 text-sm text-slate-500 leading-relaxed">
+                    調整が難しい場合もあります。こちらからの**返信をもって確定**となりますのでご了承ください。
                   </div>
-
-                  <div className="flex flex-col gap-3 pt-4">
-                    <button 
-                      onClick={() => handleBook(selectedDate, confirmingSlot, customTime === confirmingSlot)}
-                      disabled={bookingProcessing}
-                      className="w-full bg-orange-500 text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-100 hover:bg-orange-600 transition disabled:opacity-50"
-                    >
-                      {bookingProcessing ? "送信中..." : "この内容でリクエスト"}
-                    </button>
-                    <button 
-                      onClick={() => setConfirmingSlot(null)}
-                      className="w-full text-slate-400 font-bold py-2 text-sm"
-                    >
-                      キャンセルして戻る
-                    </button>
-                  </div>
+                  <button onClick={() => handleBook(selectedDate, confirmingSlot, customTime === confirmingSlot)} disabled={bookingProcessing} className="w-full bg-orange-500 text-white py-4 rounded-2xl font-bold text-lg shadow-xl hover:bg-orange-600 disabled:opacity-50">
+                    {bookingProcessing ? "送信中..." : "予約リクエストを送る"}
+                  </button>
+                  <button onClick={() => setConfirmingSlot(null)} className="w-full text-slate-400 font-bold py-2 text-sm">キャンセル</button>
                 </div>
               </div>
             )}
@@ -499,74 +358,42 @@ export default function App() {
         {/* --- View: Success --- */}
         {view === 'success' && (
           <div className="max-w-xl mx-auto text-center space-y-10 py-10 animate-in zoom-in duration-500">
-            <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-orange-50 relative overflow-hidden">
-                <div className="relative z-10">
-                    <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-                        <CheckCircle size={40} />
-                    </div>
-                    <h2 className="text-3xl font-black text-slate-800 mb-4">リクエストを送信しました</h2>
-                    <p className="text-slate-500 mb-8 leading-relaxed">
-                        仮予約を受け付けました。スケジュールの確認を行い、折り返しご連絡いたします。
-                    </p>
-                    
-                    <div className="bg-orange-50 p-6 rounded-2xl mb-8 border border-orange-100 shadow-inner">
-                        <p className="text-xs text-orange-400 font-bold mb-2">リクエスト内容</p>
-                        <p className="text-xl font-bold text-orange-600">{lastBooking?.date} / {lastBooking?.time}</p>
-                    </div>
-
-                    <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] space-y-6 shadow-2xl">
-                        <p className="text-lg font-bold flex items-center justify-center gap-2">
-                            <Sparkles size={20} className="text-orange-400" />
-                            公式LINEの登録が必要です
-                        </p>
-                        <p className="text-sm opacity-80 leading-relaxed">
-                            Zoomリンクの送付や日程確定のご連絡は、公式LINEにて行います。**下記ボタンより必ず友だち追加をお願いいたします。**
-                        </p>
-                        <a href={LINE_URL} target="_blank" className="flex items-center justify-center gap-3 bg-[#06C755] text-white px-8 py-5 rounded-2xl text-xl font-black hover:scale-105 transition-all shadow-xl">
-                            <MessageCircle size={24} />
-                            <span>公式LINEを登録する</span>
-                        </a>
-                    </div>
+            <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-orange-50">
+                <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8"><CheckCircle size={40} /></div>
+                <h2 className="text-3xl font-black text-slate-800 mb-4">リクエスト送信完了！</h2>
+                <p className="text-slate-500 mb-8 leading-relaxed">スケジュールの確認を行い、折り返しご連絡いたします。</p>
+                <div className="bg-orange-50 p-6 rounded-2xl mb-10 font-bold text-xl text-orange-600">{lastBooking?.date} / {lastBooking?.time}</div>
+                <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] space-y-6">
+                    <p className="text-lg font-bold flex items-center justify-center gap-2"><Sparkles size={20} className="text-orange-400" /> 公式LINEの登録が必要です</p>
+                    <p className="text-sm opacity-80 leading-relaxed">Zoomリンクの送付や日程確定は、公式LINEで行います。必ず友だち追加をお願いいたします。</p>
+                    <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 bg-[#06C755] text-white px-8 py-5 rounded-2xl text-xl font-black hover:scale-105 transition-all shadow-xl">
+                        <MessageCircle size={24} /> <span>公式LINEを登録する</span>
+                    </a>
                 </div>
             </div>
-
-            <button onClick={() => setView('home')} className="text-slate-400 text-sm font-bold hover:text-slate-600">
-                サイトTOPへ戻る
-            </button>
+            <button onClick={() => setView('home')} className="text-slate-400 text-sm font-bold underline">TOPに戻る</button>
           </div>
         )}
 
         {/* --- View: My Bookings --- */}
         {view === 'my-bookings' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-            <h2 className="text-3xl font-bold mb-10 text-center font-serif italic">あなたの予約状況</h2>
+            <h2 className="text-3xl font-bold mb-10 text-center" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>あなたの予約状況</h2>
             <div className="space-y-4">
-              {appointments.filter(a => a.userId === user.uid).length === 0 ? (
-                <div className="bg-white p-16 rounded-[3rem] text-center text-slate-400 border-2 border-dashed border-slate-100 shadow-inner">
-                  <p>現在、予約のリクエストはありません。</p>
-                </div>
-              ) : (
-                appointments.filter(a => a.userId === user.uid).map(booking => (
-                  <div key={booking.id} className="bg-white p-8 rounded-[2rem] shadow-sm border border-orange-50 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center gap-6">
-                      <div className="bg-orange-100 text-orange-600 p-4 rounded-2xl">
-                        <Calendar size={28} />
-                      </div>
-                      <div>
-                        <div className="font-bold text-xl">{booking.date}</div>
-                        <div className="text-slate-500 flex items-center gap-2 text-sm">
-                          <Clock size={16} /> {booking.time}
-                        </div>
-                      </div>
+              {appointments.filter(a => a.userId === user?.uid).map(booking => (
+                <div key={booking.id} className="bg-white p-8 rounded-[2rem] shadow-sm border border-orange-50 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <div className="flex items-center gap-6">
+                    <div className="bg-orange-100 text-orange-600 p-4 rounded-2xl"><Calendar size={28} /></div>
+                    <div>
+                      <div className="font-bold text-xl">{booking.date}</div>
+                      <div className="text-slate-500 flex items-center gap-2 text-sm"><Clock size={16} /> {booking.time}</div>
                     </div>
-                    <button 
-                      onClick={() => handleCancel(booking.id)}
-                      className="text-red-400 hover:text-red-500 font-bold text-sm px-4 py-2 transition"
-                    >
-                      リクエストを取り消す
-                    </button>
                   </div>
-                ))
+                  <button onClick={() => handleCancel(booking.id)} className="bg-red-50 text-red-500 px-6 py-3 rounded-xl hover:bg-red-500 hover:text-white transition font-bold">リクエストを取り消す</button>
+                </div>
+              ))}
+              {appointments.filter(a => a.userId === user?.uid).length === 0 && (
+                <div className="bg-white p-16 rounded-[3rem] text-center text-slate-400 border-2 border-dashed border-slate-100 italic">予約はまだありません。</div>
               )}
             </div>
           </div>
