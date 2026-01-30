@@ -2,312 +2,392 @@ import React, { useState, useMemo } from 'react';
 import { 
   Calendar, 
   Clock, 
-  User, 
+  MessageCircle, 
   CheckCircle, 
-  XCircle, 
-  ChevronLeft, 
-  MessageCircle,
-  Coffee,
-  Sparkles,
-  ArrowRight,
-  Send,
-  AlertCircle,
-  Users,
-  Zap,
+  Brain, 
+  Coffee, 
+  Sparkles, 
+  ChevronRight, 
+  X,
+  ListChecks,
+  Quote,
   Mic2,
-  Mail
+  ArrowRight
 } from 'lucide-react';
 
-// --- Constants ---
-const TIME_SLOTS = [
-  "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"
-];
-const DAYS_TO_SHOW = 14; // より先まで選べるように
-const ADMIN_EMAIL = "shostako315@gmail.com"; 
-const LINE_URL = "https://lin.ee/Se4FjKC";
+/**
+ * 頭の整理屋さん Landing Page & Booking App
+ */
+const App = () => {
+  const [view, setView] = useState('home'); // 'home' or 'booking'
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
 
-export default function App() {
-  const [view, setView] = useState('home'); // 'home' | 'calendar' | 'success'
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [confirmingSlot, setConfirmingSlot] = useState(null); 
-  const [customTime, setCustomTime] = useState("");
-  const [lastBookingInfo, setLastBookingInfo] = useState(null);
+  const courses = [
+    { id: '30min', title: 'さくっと 30分', price: '¥5,000', desc: 'まずは現状を整理したい、体験してみたい方に。' },
+    { id: '60min', title: 'じっくり 60分', price: '¥10,000', desc: '深い悩みや、具体的なアクションプランまで落とし込みたい方に。' }
+  ];
 
-  // 予約確定ボタンを押した時の処理
-  const handleRequest = (date, time) => {
-    const dateStr = date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
-    const info = { date: dateStr, time: time };
-    setLastBookingInfo(info);
-    
-    // メールソフトを起動するためのリンクを作成
-    const subject = encodeURIComponent("【予約リクエスト】頭の整理屋さん");
-    const body = encodeURIComponent(`以下の日時で予約を希望します。\n\n希望日時：${dateStr} ${time}〜\n\n（※公式LINEからの返信をもって確定となります）`);
-    const mailtoLink = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
+  const timeSlots = ['10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '19:00', '20:00'];
 
-    // 完了画面へ
-    setView('success');
-    
-    // 自動でメールアプリを立ち上げる（ブラウザの挙動による）
-    window.location.href = mailtoLink;
+  // LINEメッセージの生成
+  const generateLineMessage = () => {
+    const dateText = selectedDate ? `${selectedDate}日` : '未指定';
+    const timeText = selectedTime || '未指定';
+    const courseText = selectedCourse ? selectedCourse.title : 'コース未選択';
+    const text = `【予約相談】\nコース：${courseText}\n希望日時：${dateText} ${timeText}\nよろしくお願いします。`;
+    return `https://line.me/R/oaMessage/@YOUR_ID/?${encodeURIComponent(text)}`;
   };
 
-  const dates = useMemo(() => {
-    const dts = [];
-    for (let i = 0; i < DAYS_TO_SHOW; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() + i);
-      dts.push(d);
-    }
-    return dts;
-  }, []);
-
   return (
-    <div className="min-h-screen bg-[#fdfaf6] text-slate-700 font-sans">
-      
-      {/* Header */}
-      <header className="sticky top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-orange-100 px-4 py-4">
-        <div className="max-w-5xl mx-auto flex flex-row justify-between items-center w-full">
-          <div onClick={() => setView('home')} className="flex items-center gap-2 cursor-pointer flex-shrink-0">
-            <div className="bg-orange-500 p-1.5 rounded-lg text-white shadow-sm">
+    <div className="min-h-screen bg-[#fdfbf7] text-slate-700 font-sans antialiased">
+      {/* Navigation */}
+      <nav className="fixed w-full bg-white/90 backdrop-blur-sm z-50 border-b border-orange-100 shadow-sm">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div 
+            className="text-xl md:text-2xl font-bold text-orange-600 cursor-pointer flex items-center gap-2"
+            onClick={() => setView('home')}
+            style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+          >
+            <div className="bg-orange-500 p-1.5 rounded-lg text-white">
               <Coffee size={20} />
             </div>
-            <span className="text-lg md:text-xl font-bold text-slate-800 whitespace-nowrap" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>頭の整理屋さん</span>
+            <span>頭の整理屋さん</span>
           </div>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setView('calendar')}
-              className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg hover:bg-orange-600 active:scale-95 whitespace-nowrap transition"
-            >
-              予約する
-            </button>
-          </div>
+          <button 
+            onClick={() => setView('booking')}
+            className="bg-orange-500 text-white px-6 py-2 rounded-full font-bold hover:bg-orange-600 transition-all shadow-md active:scale-95 text-sm md:text-base"
+          >
+            予約する
+          </button>
         </div>
-      </header>
+      </nav>
 
-      <main className="max-w-5xl mx-auto px-6 py-12">
-        
-        {/* --- View: Home --- */}
-        {view === 'home' && (
-          <div className="space-y-24 animate-in fade-in duration-700 pb-10">
-            {/* Hero */}
-            <div className="text-center space-y-8 py-10">
-              <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
-                <Sparkles size={14} /> Logic & Harmony
-              </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-slate-800 leading-tight" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>
-                話すだけで、<br />
-                <span className="text-orange-500 underline decoration-orange-200 decoration-wavy underline-offset-8">脳内デトックス。</span>
-              </h1>
-              <p className="text-lg text-slate-500 max-w-xl mx-auto leading-relaxed">
-                正論だけでは片付かない、今のあなたの「モヤモヤ」。<br />
-                AIにはできない文脈の読み取りと共感で、心を調和させます。
-              </p>
-              <div className="flex flex-col sm:flex-row gap-5 justify-center pt-4">
-                <button 
-                  onClick={() => setView('calendar')}
-                  className="bg-slate-900 text-white px-12 py-5 rounded-[2rem] text-xl font-bold shadow-2xl hover:bg-slate-800 transition transform hover:-translate-y-1"
-                >
-                  空き枠を見て予約する
-                </button>
-                <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className="bg-[#06C755] text-white px-10 py-5 rounded-[2rem] text-xl font-bold flex items-center justify-center gap-2 shadow-xl hover:opacity-90 transition">
-                  <MessageCircle size={24} /> 公式LINEで相談
-                </a>
-              </div>
-            </div>
-
-            {/* AI vs HUMAN Section */}
-            <div className="py-12 bg-white rounded-[3rem] p-8 md:p-12 border border-slate-100 shadow-inner">
-                <div className="text-center mb-12">
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-800" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>なぜ、AIではなく「人間」なのか。</h2>
+      {view === 'home' ? (
+        <>
+          {/* Hero Section */}
+          <section className="pt-32 pb-16 px-6 overflow-hidden">
+            <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
+              <div className="flex-1 space-y-8 text-center md:text-left">
+                <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-sm font-bold animate-pulse">
+                  <Sparkles size={16} />
+                  <span>準備ゼロで、そのままのあなたでOK！</span>
                 </div>
-                <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-6">
-                        <div className="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm opacity-60">
-                            <div className="bg-slate-100 p-3 rounded-xl text-slate-400 h-fit"><Zap size={24} /></div>
-                            <div>
-                                <p className="font-bold text-slate-400 mb-1">AIが得意なこと</p>
-                                <p className="text-sm text-slate-400 leading-relaxed">一般的な正論、情報の要約、データの照合提示。</p>
-                            </div>
-                        </div>
-                        <div className="flex gap-4 p-6 bg-orange-50 rounded-[2rem] border border-orange-200 shadow-md">
-                            <div className="bg-orange-500 p-3 rounded-xl text-white h-fit"><Mic2 size={24} /></div>
-                            <div>
-                                <p className="font-bold text-orange-600 mb-1">Eigoにしかできないこと</p>
-                                <p className="text-sm text-orange-900 leading-relaxed font-medium">沈黙の間の「違和感」を捉えること、本音を汲み取ること、指揮者のように最適な「調律」を提示すること。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="space-y-4">
-                        <h3 className="text-xl font-bold text-slate-800 leading-relaxed" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>
-                            「AIは要約する。<br /><span className="text-orange-500 italic underline decoration-orange-200">私は、あなたの可能性を調和させる。</span>」
-                        </h3>
-                    </div>
-                </div>
-            </div>
-
-            {/* Use Case Stories */}
-            <div className="space-y-10">
-                <div className="text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold flex items-center justify-center gap-3" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}><Users className="text-orange-500" /> 例えば、こんな時に。</h2>
-                </div>
-                <div className="grid md:grid-cols-2 gap-8">
-                    <div className="bg-white p-8 rounded-[3rem] border border-orange-100 shadow-sm">
-                        <span className="text-3xl mb-4 block">🙋‍♀️</span>
-                        <p className="font-bold text-orange-600 mb-2">Aさん（50代・主婦）の場合</p>
-                        <p className="text-slate-600 italic mb-4 text-sm leading-loose">「娘とのやり取りでいつもイライラ。何が嫌なのか自分でも分からないんです」</p>
-                        <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-orange-500 shadow-inner">感情を紐解くと、実は「寂しさ」が原因。30分後には笑顔になれました。</div>
-                    </div>
-                    <div className="bg-white p-8 rounded-[3rem] border border-blue-100 shadow-sm">
-                        <span className="text-3xl mb-4 block">👨‍💻</span>
-                        <p className="font-bold text-blue-600 mb-2">Bさん（30代・会社員）の場合</p>
-                        <p className="text-slate-600 italic mb-4 text-sm leading-loose">「転職したいけど、頭の中がゴミ屋敷状態で動けません」</p>
-                        <div className="bg-slate-50 p-4 rounded-2xl text-sm text-slate-500 leading-relaxed border-l-4 border-blue-500 shadow-inner">思考を棚卸し。強みと不安を仕分けして、明日やるべき「1つのこと」を特定。視界が明るくなりました。</div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Profile */}
-            <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-10">
-              <div className="relative flex-shrink-0">
-                <div className="w-40 h-40 rounded-[2.5rem] bg-slate-200 overflow-hidden shadow-xl rotate-3">
-                  <img src="./profile.jpg" onerror="this.src='https://via.placeholder.com/400x400/e2e8f0/64748b?text=Photo'" alt="Eigo" className="w-full h-full object-cover" />
-                </div>
-                <div className="absolute -bottom-2 -right-2 bg-white p-2 rounded-xl shadow-lg border border-slate-50"><span className="text-2xl">🎼</span></div>
-              </div>
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="text-2xl font-bold mb-4 text-slate-800" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>話を聞く人：Eigo</h3>
-                <p className="text-slate-600 leading-relaxed mb-4 text-sm">ビジネスコンサルタントとして戦略を考え、指揮者として100人の音をまとめる。あなたの思考も心地よく整えます。</p>
-                <p className="text-slate-600 text-sm font-medium">本当に好きなことは「誰かの頭の中をスッキリさせて、明日を少し楽しみな気持ちに変えること」。</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* --- View: Calendar --- */}
-        {view === 'calendar' && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold mb-2" style={{fontFamily: "'Zen Maru Gothic', sans-serif"}}>日時を選択</h2>
-              <p className="text-slate-400 text-sm italic">17:00以降の30分単位で選んでください</p>
-            </div>
-            
-            <div className="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-2xl border border-orange-50">
-              <div className="flex overflow-x-auto gap-4 pb-6 mb-8 border-b border-slate-50 scrollbar-hide">
-                {dates.map((date, i) => {
-                  const isSelected = selectedDate.toDateString() === date.toDateString();
-                  return (
-                    <button key={i} onClick={() => setSelectedDate(date)} className={`flex-shrink-0 w-20 py-5 rounded-3xl flex flex-col items-center transition-all ${isSelected ? 'bg-orange-500 text-white shadow-lg scale-105' : 'bg-slate-50 text-slate-500'}`}>
-                      <span className="text-xs font-bold mb-1">{date.toLocaleDateString('ja-JP', { weekday: 'short' })}</span>
-                      <span className="text-2xl font-black">{date.getDate()}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-10">
-                {TIME_SLOTS.map(time => (
+                <h1 className="text-4xl md:text-6xl font-bold leading-tight text-slate-800" style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}>
+                  ねぇ、ちょっと<br />
+                  <span className="text-orange-500 underline decoration-orange-200 decoration-8 underline-offset-8">聞いてほしいこと</span><br />
+                  ありませんか？
+                </h1>
+                <p className="text-lg text-slate-600 leading-relaxed max-w-xl">
+                  「何に悩んでるか分からないけど、心が重い」<br />
+                  そんな今の気持ちをそのまま話すだけで、プロの整理屋がパズルを解くようにスッキリ整えます。
+                </p>
+                <div className="pt-4 flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-start">
                   <button 
-                    key={time} 
-                    onClick={() => setConfirmingSlot(time)} 
-                    className="py-4 px-2 rounded-2xl font-bold text-center border-2 border-slate-100 bg-white hover:border-orange-500 hover:text-orange-500 transition-all"
+                    onClick={() => setView('booking')}
+                    className="bg-slate-800 text-white px-10 py-5 rounded-2xl text-xl font-bold hover:bg-slate-700 transition-all shadow-2xl hover:-translate-y-1 w-full sm:w-auto flex items-center justify-center gap-2"
                   >
-                    {time}
+                    30分、脳を貸し出します <ChevronRight size={20} />
                   </button>
+                </div>
+              </div>
+              <div className="flex-1 relative">
+                <div className="absolute -top-10 -left-10 w-40 h-40 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+                <div className="relative bg-white p-4 rounded-[2.5rem] shadow-2xl rotate-2">
+                  <img 
+                    src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800" 
+                    alt="対話のイメージ" 
+                    className="rounded-[2rem] w-full h-auto grayscale-[20%]"
+                  />
+                  <div className="absolute bottom-10 -left-6 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce">
+                    <div className="bg-green-100 p-2 rounded-full text-green-600">
+                      <CheckCircle size={20} />
+                    </div>
+                    <span className="font-bold text-sm">30分でスッキリ解決</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Case Study Section */}
+          <section className="py-24 bg-white">
+            <div className="max-w-5xl mx-auto px-6">
+              <h2 className="text-3xl font-bold text-center mb-4 font-maru" style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}>例えば、こんなとき。</h2>
+              <p className="text-center text-slate-500 mb-16 italic font-medium">「こんなこと、誰に話せばいいの？」という時こそ、私の出番です。</p>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                {[
+                  { 
+                    icon: <Coffee className="text-orange-500" />, 
+                    title: "人間関係のモヤモヤ", 
+                    desc: "「あの人の一言がずっと頭を離れない…」そんな感情の糸を一本ずつ解きほぐして、あなたの心が軽くなる捉え方を一緒に探します。",
+                    bg: "bg-orange-50", border: "border-orange-100"
+                  },
+                  { 
+                    icon: <ListChecks className="text-blue-500" />, 
+                    title: "タスクの山積みパニック", 
+                    desc: "仕事、家事、やりたい事。どれから手をつければ？頭の中の「付箋」をテーブルに全部並べて、優先順位を「えいやっ」と決めます。",
+                    bg: "bg-blue-50", border: "border-blue-100"
+                  },
+                  { 
+                    icon: <Brain className="text-green-500" />, 
+                    title: "人生の地図を書きたい", 
+                    desc: "「今のままでいいのかな、何か始めたい」。漠然とした将来への不安を、強みや好きを掘り起こしながら、具体的な「第一歩」に変えます。",
+                    bg: "bg-green-50", border: "border-green-100"
+                  }
+                ].map((item, idx) => (
+                  <div key={idx} className={`${item.bg} p-10 rounded-[2.5rem] border ${item.border} hover:shadow-xl transition-all duration-300 group`}>
+                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-md group-hover:scale-110 transition-transform">
+                      {item.icon}
+                    </div>
+                    <h3 className="font-bold text-xl mb-4 font-maru">{item.title}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
                 ))}
               </div>
-
-              <div className="pt-8 border-t border-slate-50">
-                <p className="text-sm font-bold mb-4 flex items-center gap-2"><AlertCircle size={16} className="text-orange-500" /> その他の時間を希望</p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <input 
-                    type="text" 
-                    placeholder="例：22:30から希望、平日午前など" 
-                    className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-4 text-sm focus:ring-2 focus:ring-orange-500 outline-none shadow-inner" 
-                    value={customTime} 
-                    onChange={(e) => setCustomTime(e.target.value)} 
-                  />
-                  <button 
-                    disabled={!customTime} 
-                    onClick={() => setConfirmingSlot(customTime)} 
-                    className="bg-slate-800 text-white px-8 py-4 rounded-xl font-bold text-sm disabled:opacity-30 transition"
-                  >
-                    相談する
-                  </button>
-                </div>
-              </div>
             </div>
+          </section>
 
-            {/* Confirm Modal */}
-            {confirmingSlot && (
-              <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
-                <div className="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-2xl space-y-8 animate-in zoom-in-95">
-                  <div className="text-center space-y-4">
-                    <h3 className="text-2xl font-bold font-serif italic">ご予約の確認</h3>
-                    <div className="bg-orange-50 p-6 rounded-2xl font-bold text-xl text-orange-600 tracking-tight">
-                      {selectedDate.toLocaleDateString('ja-JP', { month: 'long', day: 'numeric' })} / {confirmingSlot}〜
+          {/* Method Section */}
+          <section className="py-24 px-6 bg-[#1e293b]">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-[3.5rem] p-10 md:p-20 relative overflow-hidden border border-slate-700 shadow-2xl">
+                <div className="absolute -top-10 -right-10 p-8 opacity-5 text-white">
+                  <Quote size={180} />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-12 font-maru text-orange-400 text-center" style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}>
+                  「ただの雑談」が、<br className="md:hidden" />「解決」に変わる3つのステップ
+                </h2>
+                <div className="space-y-12">
+                  {[
+                    { step: '01', title: '脈絡なく、心のままに話す', desc: 'コンサルタントの「聴く技術」で、あなたのバラバラな言葉の中から重要なエッセンスを丁寧に拾い上げます。' },
+                    { step: '02', stepName: '02', title: '思考を「仕分け」する', desc: '指揮者が全体を見渡すように、何が本質的な悩みで、何が単なる「思考のゴミ」なのかを優しく分類します。' },
+                    { step: '03', stepName: '03', title: '「やるべきこと」を言語化', desc: '最後には、スッキリとした頭と、明日からできる「具体的な一歩」が書かれたメモをお渡しします。' }
+                  ].map((item, i) => (
+                    <div key={i} className="flex gap-6 group">
+                      <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-black text-xl shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform">
+                        {item.step}
+                      </div>
+                      <div className="space-y-2">
+                        <p className="font-bold text-xl text-white font-maru">{item.title}</p>
+                        <p className="text-slate-400 leading-relaxed">{item.desc}</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-slate-500 leading-relaxed italic text-center">
-                      ※スケジュールの都合により、調整が難しい場合もあります。折り返しの返信をもって確定となります。
-                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Profile Section */}
+          <section className="py-24 px-6 bg-[#fdfbf7]">
+            <div className="max-w-4xl mx-auto bg-white p-8 md:p-16 rounded-[3.5rem] shadow-sm border border-orange-100 flex flex-col md:flex-row items-center gap-12">
+              <div className="relative flex-shrink-0 group">
+                <div className="w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-8 border-orange-50 shadow-2xl transition-transform duration-500 group-hover:rotate-6">
+                  <img src="https://via.placeholder.com/400x400/e2e8f0/64748b?text=Host" alt="タク" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute -bottom-2 -right-2 bg-orange-500 text-white p-3 rounded-2xl shadow-xl animate-pulse">
+                  <Mic2 size={24} />
+                </div>
+              </div>
+              <div className="flex-1 text-center md:text-left space-y-6">
+                <div className="space-y-2">
+                  <h3 className="text-3xl font-black font-maru text-slate-800 tracking-tight" style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}>話を聞く人：タク</h3>
+                  <p className="text-orange-600 font-bold text-sm tracking-widest uppercase">Consultant & Conductor</p>
+                </div>
+                <p className="text-slate-600 leading-relaxed italic">
+                  「普段は企業の戦略を練ったり、100人のオーケストラを指揮したりしています。でも、一番心が動くのは、誰かの頭がパッと晴れて、目がキラキラ輝き出す瞬間を見ること。」
+                </p>
+                <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                  <span className="bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-500">ロジカルシンキング</span>
+                  <span className="bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-500">傾聴プロ</span>
+                  <span className="bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-500">思考の調律師</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Footer / CTA */}
+          <footer className="py-24 bg-white text-center border-t border-orange-100">
+            <div className="max-w-3xl mx-auto px-6 space-y-12">
+              <div className="space-y-4">
+                <h2 className="text-3xl md:text-4xl font-bold font-maru italic underline decoration-orange-300 decoration-wavy underline-offset-8">さぁ、モヤモヤを置いていきませんか？</h2>
+                <p className="text-slate-400">あなたの日常の指揮を、少しだけお手伝いさせてください。</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <button 
+                  onClick={() => setView('booking')}
+                  className="bg-orange-500 text-white py-6 rounded-[2rem] text-xl font-bold shadow-xl hover:bg-orange-600 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3"
+                >
+                  <Calendar /> 日時を選んで予約
+                </button>
+                <a 
+                  href="https://lin.ee/Se4FjKC" 
+                  className="bg-[#06C755] text-white py-6 rounded-[2rem] text-xl font-bold shadow-xl hover:opacity-90 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3"
+                >
+                  <MessageCircle /> 公式LINEで相談
+                </a>
+              </div>
+              <div className="pt-20 text-slate-300 text-xs tracking-[0.2em] uppercase font-bold">
+                &copy; 2026 LOGICAL DETOX LAB / THE BRAIN ORGANIZER
+              </div>
+            </div>
+          </footer>
+        </>
+      ) : (
+        /* Booking View */
+        <div className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <div className="flex items-center justify-between border-b border-orange-100 pb-8">
+              <button 
+                onClick={() => setView('home')}
+                className="flex items-center gap-2 text-slate-400 hover:text-slate-800 transition-colors font-bold"
+              >
+                <ChevronLeft size={24} /> 戻る
+              </button>
+              <h2 className="text-2xl md:text-3xl font-black font-maru">予約・お問い合わせ</h2>
+              <div className="w-10"></div>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12">
+              <div className="space-y-10">
+                {/* Step 1: Course */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">1</span>
+                    <h3 className="text-xl font-bold font-maru">コースを選ぶ</h3>
                   </div>
-                  <div className="space-y-3">
-                    <button 
-                      onClick={() => handleRequest(selectedDate, confirmingSlot)} 
-                      className="w-full bg-orange-500 text-white py-5 rounded-2xl font-bold text-lg shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2"
-                    >
-                      <Send size={20} />
-                      予約リクエストを送る
-                    </button>
-                    <button 
-                      onClick={() => setConfirmingSlot(null)} 
-                      className="w-full text-slate-400 font-bold py-2 text-sm transition hover:text-slate-600"
-                    >
-                      キャンセル
-                    </button>
+                  <div className="grid gap-4">
+                    {courses.map(course => (
+                      <div 
+                        key={course.id}
+                        onClick={() => setSelectedCourse(course)}
+                        className={`p-6 rounded-3xl border-2 transition-all cursor-pointer relative overflow-hidden ${
+                          selectedCourse?.id === course.id 
+                            ? 'border-orange-500 bg-orange-50 shadow-lg' 
+                            : 'border-slate-100 bg-white hover:border-orange-200'
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="font-bold text-lg">{course.title}</span>
+                          <span className="text-orange-600 font-black text-xl">{course.price}</span>
+                        </div>
+                        <p className="text-sm text-slate-500 leading-relaxed">{course.desc}</p>
+                        {selectedCourse?.id === course.id && (
+                          <div className="absolute top-0 right-0 bg-orange-500 text-white px-3 py-1 rounded-bl-xl">
+                            <CheckCircle size={14} />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Step 2: Date/Time */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">2</span>
+                    <h3 className="text-xl font-bold font-maru">希望日時を選ぶ</h3>
+                  </div>
+                  <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                    <div className="flex overflow-x-auto gap-3 pb-4 no-scrollbar mb-6 border-b border-slate-50">
+                      {[...Array(7)].map((_, i) => {
+                        const date = new Date();
+                        date.setDate(date.getDate() + i + 1);
+                        const d = date.getDate();
+                        const isSel = selectedDate === d;
+                        return (
+                          <div 
+                            key={i}
+                            onClick={() => setSelectedDate(d)}
+                            className={`flex-shrink-0 w-16 py-3 rounded-2xl flex flex-col items-center gap-1 cursor-pointer transition-all ${
+                              isSel ? 'bg-orange-500 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-orange-50'
+                            }`}
+                          >
+                            <span className="text-[10px] font-bold uppercase">{date.toLocaleDateString('ja-JP', { weekday: 'short' })}</span>
+                            <span className="text-xl font-black">{d}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      {timeSlots.map(time => (
+                        <div 
+                          key={time}
+                          onClick={() => setSelectedTime(time)}
+                          className={`py-3 rounded-xl border flex items-center justify-center text-xs font-bold cursor-pointer transition-all ${
+                            selectedTime === time 
+                              ? 'bg-slate-800 text-white border-slate-800' 
+                              : 'border-slate-100 hover:border-orange-200'
+                          }`}
+                        >
+                          {time}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
-          </div>
-        )}
 
-        {/* --- View: Success --- */}
-        {view === 'success' && (
-          <div className="max-w-xl mx-auto text-center space-y-10 py-10 animate-in zoom-in duration-500">
-            <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-orange-50">
-                <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8"><CheckCircle size={40} /></div>
-                <h2 className="text-3xl font-black text-slate-800 mb-4 tracking-tighter">リクエストを送信しました</h2>
-                <p className="text-slate-500 mb-8 leading-relaxed italic text-sm">
-                  （※メールアプリが起動していない場合は、下のボタンからLINEで教えてください）
-                </p>
-                <div className="bg-orange-50 p-6 rounded-2xl mb-10 font-bold text-xl text-orange-600">
-                  {lastBookingInfo?.date}<br />{lastBookingInfo?.time} 〜
-                </div>
-                <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] space-y-6 shadow-xl">
-                    <p className="text-lg font-bold flex items-center justify-center gap-2 text-orange-400">
-                        <Sparkles size={20} /> 公式LINEの登録が必要です
+              {/* Step 3: Final Confirmation & Submission */}
+              <div className="space-y-8">
+                <div className="bg-slate-900 text-white p-10 rounded-[3.5rem] shadow-2xl space-y-8 sticky top-32 border border-slate-700">
+                  <h3 className="text-2xl font-bold font-maru text-orange-400">ご予約内容の確認</h3>
+                  <div className="space-y-6">
+                    <div className="flex justify-between border-b border-slate-700 pb-4">
+                      <span className="text-slate-400 flex items-center gap-2 text-sm"><Coffee size={16} /> コース</span>
+                      <span className="font-bold">{selectedCourse?.title || '未選択'}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-slate-700 pb-4">
+                      <span className="text-slate-400 flex items-center gap-2 text-sm"><Calendar size={16} /> 日付</span>
+                      <span className="font-bold">{selectedDate ? `${selectedDate}日` : '未選択'}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-slate-700 pb-4">
+                      <span className="text-slate-400 flex items-center gap-2 text-sm"><Clock size={16} /> 時間</span>
+                      <span className="font-bold">{selectedTime || '未選択'}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-4">
+                      <span className="text-lg">合計（お試し価格）</span>
+                      <span className="text-3xl font-black text-orange-400">{selectedCourse?.price || '---'}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-4">
+                    <p className="text-xs text-slate-400 leading-relaxed italic">
+                      ※このボタンを押すとLINEが立ち上がります。内容をそのまま送信してください。折り返しの返信をもって、予約完了となります。
                     </p>
-                    <p className="text-sm opacity-80 leading-relaxed font-light text-left">
-                        日程の最終確定や、当日のZoomリンク送付は公式LINEで行います。**以下のボタンから必ず友だち追加をお願いいたします。**
-                    </p>
-                    <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 bg-[#06C755] text-white px-8 py-5 rounded-2xl text-xl font-black hover:scale-105 transition-all shadow-xl">
-                        <MessageCircle size={24} /> <span>公式LINEを登録する</span>
+                    <a 
+                      href={selectedCourse && selectedDate && selectedTime ? generateLineMessage() : '#'}
+                      onClick={(e) => {
+                        if (!selectedCourse || !selectedDate || !selectedTime) {
+                          e.preventDefault();
+                          alert('コースと日時を選択してください');
+                        }
+                      }}
+                      target="_blank"
+                      className={`w-full flex items-center justify-center gap-3 py-5 rounded-2xl text-xl font-bold shadow-xl transition-all ${
+                        selectedCourse && selectedDate && selectedTime 
+                          ? 'bg-[#06C755] text-white hover:scale-[1.02]' 
+                          : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                      }`}
+                    >
+                      <MessageCircle /> LINEで予約を送信 <ArrowRight size={18} />
                     </a>
+                  </div>
                 </div>
+              </div>
             </div>
-            <button onClick={() => setView('home')} className="text-slate-400 text-sm font-bold underline transition hover:text-slate-600">TOPへ戻る</button>
           </div>
-        )}
-
-      </main>
-
-      {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-slate-900/95 backdrop-blur-md text-white px-6 py-4 rounded-full flex justify-around shadow-2xl z-[60] border border-white/10">
-        <button onClick={() => setView('home')} className={view === 'home' ? 'text-orange-400' : 'text-slate-400'}><User size={24} /></button>
-        <button onClick={() => setView('calendar')} className={view === 'calendar' ? 'text-orange-400' : 'text-slate-400'}><Calendar size={24} /></button>
-        <button onClick={() => setView('home')} className="text-slate-400"><Coffee size={24} /></button>
-      </div>
-
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default App;
+                        
