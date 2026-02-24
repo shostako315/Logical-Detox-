@@ -61,6 +61,8 @@ font-weight: 300;
 letter-spacing: 0.3em;
 color: #D4B896;
 text-transform: uppercase;
+min-width: 0;
+flex-shrink: 1;
 }
 
 .nav-logo span { color: #9A9080; font-size: 11px; display: block; letter-spacing: 0.2em; margin-top: 2px; }
@@ -77,12 +79,14 @@ transition: color 0.3s;
 
 .nav-cta {
 font-size: 12px;
-letter-spacing: 0.2em;
-padding: 10px 28px;
+letter-spacing: 0.15em;
+padding: 10px 20px;
 border: 1px solid #B79970;
 color: #B79970 !important;
 text-decoration: none;
 transition: all 0.3s;
+white-space: nowrap;
+flex-shrink: 0;
 }
 .nav-cta:hover { background: #B79970; color: #0A0A0A !important; }
 
@@ -411,7 +415,7 @@ transition: transform 0.5s ease;
 font-family: ‘Cormorant Garamond’, serif;
 font-size: 72px;
 font-weight: 300;
-color: rgba(183,153,112,0.08);
+color: rgba(183,153,112,0.25);
 line-height: 1;
 margin-bottom: 24px;
 font-style: italic;
@@ -1028,16 +1032,16 @@ footer { padding: 40px 20px; }
             <div class="stat-label">VariOrchestra 設立年</div>
           </div>
           <div class="stat-box">
-            <div class="stat-num">5</div>
-            <div class="stat-label">定期演奏会開催実績</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-num">法人</div>
-            <div class="stat-label">2025年一般社団法人化</div>
+            <div class="stat-num">一般<br><span style="font-size:18px;">社団法人</span></div>
+            <div class="stat-label">2025年法人化</div>
           </div>
           <div class="stat-box">
             <div class="stat-num">多数</div>
             <div class="stat-label">企業・法人イベント実績</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">全国</div>
+            <div class="stat-label">ホテル・屋外含む対応実績</div>
           </div>
         </div>
       </div>
@@ -1071,8 +1075,7 @@ footer { padding: 40px 20px; }
     <div class="reveal">
       <div class="section-label">Our Services</div>
       <h2 class="section-title">
-        イベントの規模・<em>ご要望に合わせた</em><br>
-        3つのプラン
+        規模・ご要望に合わせた<br><em>3つのプラン</em>
       </h2>
     </div>
     <div class="services-grid reveal">
@@ -1173,9 +1176,9 @@ footer { padding: 40px 20px; }
       <div class="case-card featured">
         <div class="case-badge">FEATURED CASE</div>
         <div class="case-venue">帝国ホテル 東京</div>
-        <div class="case-meta">2025年9月 ｜ 法人様 周年パーティー</div>
+        <div class="case-meta">法人様 周年パーティー</div>
         <p class="section-body">
-          医療関係者を多数お招きした周年記念パーティー。ゲストの属性に合わせて医療ドラマのテーマ曲とクラシック名曲を組み合わせたオリジナルプログラムを制作。格調高い帝国ホテルの空間を、フルオーケストラが彩りました。
+          医療関係者を多数お招きした周年記念パーティー。ゲストの属性に合わせて医療ドラマのテーマ曲とクラシック名曲を組み合わせたオリジナルプログラムを制作しました。
         </p>
         <div class="case-program">
           ♪『ドクターX』テーマ曲<br>
@@ -1187,19 +1190,19 @@ footer { padding: 40px 20px; }
       </div>
       <div class="case-card">
         <div class="case-badge">MORE CASES</div>
-        <div class="case-venue" style="margin-bottom:32px;">演奏実績会場</div>
-        <div style="display:flex;flex-direction:column;gap:24px;">
+        <div class="case-venue" style="margin-bottom:28px;">その他演奏実績</div>
+        <div style="display:flex;flex-direction:column;gap:20px;">
           <div>
-            <div class="case-meta" style="margin-bottom:6px;">パレスホテル 東京</div>
-            <p class="flow-step-desc">格調高い宴会場での企業レセプション・周年パーティー演奏。クラシックから現代曲まで対応。</p>
+            <div class="case-meta" style="margin-bottom:6px;">パレスホテル 東京｜コンサルティングファーム懇親会</div>
+            <p class="flow-step-desc">情熱大陸、To Love You More、Time to Say Goodbye、乾杯の歌、オー・ソレ・ミオなど、国際色豊かな選曲でゲストを魅了。</p>
           </div>
-          <div style="border-top:1px solid rgba(183,153,112,0.1);padding-top:24px;">
-            <div class="case-meta" style="margin-bottom:6px;">日本工業倶楽部</div>
-            <p class="flow-step-desc">歴史ある社交クラブでの式典・懇親会演奏。格式に合わせた選曲と演出でご好評を頂きました。</p>
+          <div style="border-top:1px solid rgba(183,153,112,0.1);padding-top:20px;">
+            <div class="case-meta" style="margin-bottom:6px;">日本工業倶楽部｜式典・懇親会</div>
+            <p class="flow-step-desc">歴史ある社交クラブでの格式高い式典演奏。会場の雰囲気に合わせた選曲と演出でご好評を頂きました。</p>
           </div>
-          <div style="border-top:1px solid rgba(183,153,112,0.1);padding-top:24px;">
-            <div class="case-meta" style="margin-bottom:6px;">病院・教育機関</div>
-            <p class="flow-step-desc">院内コンサートや学校式典など、さまざまな場での演奏実績があります。</p>
+          <div style="border-top:1px solid rgba(183,153,112,0.1);padding-top:20px;">
+            <div class="case-meta" style="margin-bottom:6px;">野外ステージ・その他</div>
+            <p class="flow-step-desc">屋外イベントや病院・教育機関での演奏実績も多数。会場・規模・ジャンルを問わず柔軟に対応します。</p>
           </div>
         </div>
       </div>
@@ -1213,9 +1216,7 @@ footer { padding: 40px 20px; }
   <div class="section-inner">
     <div class="reveal">
       <div class="section-label">Pricing</div>
-      <h2 class="section-title">
-        料金の<em>目安</em>
-      </h2>
+      <h2 class="section-title">料金の目安</h2>
       <p class="section-body">
         料金はイベントの内容・演奏時間・人数・会場等により異なります。お見積もりは無料ですのでお気軽にご相談ください。
       </p>
@@ -1294,44 +1295,42 @@ footer { padding: 40px 20px; }
         <p>
           イベントの規模・日程・ご予算など、まずはお気軽にご連絡ください。お見積もりは無料で承ります。
         </p>
-        <div class="contact-detail">
-          <div class="contact-detail-label">Email</div>
-          <div class="contact-detail-value"><a href="/cdn-cgi/l/email-protection#fd94939b92bd8b9c8f94928f9e95988e898f9cd39e9290" style="color:#9A9080;text-decoration:none;"><span class="__cf_email__" data-cfemail="c2abaca4ad82b4a3b0abadb0a1aaa7b1b6b0a3eca1adaf">[email&#160;protected]</span></a></div>
-        </div>
-        <div class="contact-detail">
-          <div class="contact-detail-label">Address</div>
-          <div class="contact-detail-value">〒180-0004 東京都武蔵野市吉祥寺本町1-20-1<br>吉祥寺永谷シティプラザ1002</div>
-        </div>
         <div class="contact-detail" style="margin-top:32px;">
+          <div class="contact-detail-label">Email</div>
+          <div class="contact-detail-value">
+            <a href="mailto:info@variorchestra.com" style="color:#9A9080;text-decoration:none;letter-spacing:0.05em;">info@variorchestra.com</a>
+          </div>
+        </div>
+        <div class="contact-detail" style="margin-top:20px;">
           <div class="contact-detail-label">Response Time</div>
           <div class="contact-detail-value">通常3営業日以内にご返信いたします</div>
         </div>
       </div>
-      <form class="reveal" onsubmit="handleSubmit(event)">
+      <form class="reveal" id="contactForm" onsubmit="handleSubmit(event)">
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">会社名 *</label>
-            <input type="text" class="form-input" placeholder="株式会社〇〇" required>
+            <input type="text" id="f_company" class="form-input" placeholder="株式会社〇〇" required>
           </div>
           <div class="form-group">
             <label class="form-label">お名前 *</label>
-            <input type="text" class="form-input" placeholder="山田 太郎" required>
+            <input type="text" id="f_name" class="form-input" placeholder="山田 太郎" required>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">メールアドレス *</label>
-            <input type="email" class="form-input" placeholder="info@example.com" required>
+            <input type="email" id="f_email" class="form-input" placeholder="info@example.com" required>
           </div>
           <div class="form-group">
             <label class="form-label">電話番号</label>
-            <input type="tel" class="form-input" placeholder="03-XXXX-XXXX">
+            <input type="tel" id="f_tel" class="form-input" placeholder="03-XXXX-XXXX">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">イベントの種類</label>
-            <select class="form-select">
+            <select id="f_type" class="form-select">
               <option value="" style="background:#1A1810;">選択してください</option>
               <option style="background:#1A1810;">周年・記念パーティー</option>
               <option style="background:#1A1810;">懇親会・忘年会</option>
@@ -1344,7 +1343,7 @@ footer { padding: 40px 20px; }
           </div>
           <div class="form-group">
             <label class="form-label">ご希望の編成</label>
-            <select class="form-select">
+            <select id="f_size" class="form-select">
               <option value="" style="background:#1A1810;">選択してください</option>
               <option style="background:#1A1810;">小編成（〜6名）</option>
               <option style="background:#1A1810;">中編成（7〜20名）</option>
@@ -1355,13 +1354,13 @@ footer { padding: 40px 20px; }
         </div>
         <div class="form-group">
           <label class="form-label">開催予定日・会場</label>
-          <input type="text" class="form-input" placeholder="例：2025年3月15日 / 帝国ホテル 東京">
+          <input type="text" id="f_venue" class="form-input" placeholder="例：2025年3月15日 / 帝国ホテル 東京">
         </div>
         <div class="form-group">
           <label class="form-label">ご要望・ご質問</label>
-          <textarea class="form-textarea" placeholder="演奏曲のご希望、ゲストの属性、ご予算感など、何でもお気軽にご記入ください。"></textarea>
+          <textarea id="f_message" class="form-textarea" placeholder="演奏曲のご希望、ゲストの属性、ご予算感など、何でもお気軽にご記入ください。"></textarea>
         </div>
-        <button type="submit" class="form-submit">送信する</button>
+        <button type="submit" class="form-submit">メールで送信する</button>
       </form>
     </div>
   </div>
@@ -1430,13 +1429,38 @@ reveals.forEach(function(el) { obs.observe(el); });
 reveals.forEach(function(el) { el.classList.add(‘visible’); });
 }
 
-// Form submit
+// Form submit → mailto
 function handleSubmit(e) {
 e.preventDefault();
-var btn = e.target.querySelector(’.form-submit’);
-btn.textContent = ‘送信しました。ありがとうございます。’;
-btn.style.background = ‘#4A7A5A’;
-btn.disabled = true;
+var company  = (document.getElementById(‘f_company’)  || {}).value || ‘’;
+var name     = (document.getElementById(‘f_name’)     || {}).value || ‘’;
+var email    = (document.getElementById(‘f_email’)    || {}).value || ‘’;
+var tel      = (document.getElementById(‘f_tel’)      || {}).value || ‘’;
+var type     = (document.getElementById(‘f_type’)     || {}).value || ‘’;
+var size     = (document.getElementById(‘f_size’)     || {}).value || ‘’;
+var venue    = (document.getElementById(‘f_venue’)    || {}).value || ‘’;
+var message  = (document.getElementById(‘f_message’)  || {}).value || ‘’;
+
+```
+var body =
+  '【会社名】' + company + '\n' +
+  '【お名前】' + name + '\n' +
+  '【メール】' + email + '\n' +
+  '【電話番号】' + tel + '\n' +
+  '【イベント種類】' + type + '\n' +
+  '【希望編成】' + size + '\n' +
+  '【開催日・会場】' + venue + '\n\n' +
+  '【ご要望・ご質問】\n' + message;
+
+var subject = encodeURIComponent('【演奏ご依頼】' + company + ' 様');
+var mailBody = encodeURIComponent(body);
+window.location.href = 'mailto:info@variorchestra.com?subject=' + subject + '&body=' + mailBody;
+
+var btn = e.target.querySelector('.form-submit');
+btn.textContent = 'メールアプリを開いています…';
+btn.style.background = '#4A7A5A';
+```
+
 }
 
 // Smooth scroll with nav offset
