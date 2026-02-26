@@ -195,11 +195,18 @@ transition:all 0.45s;
 .btn-ghost:hover { border-color:#B79970; background:rgba(183,153,112,0.08); transform:translateY(-3px); }
 
 .hero-scroll {
-position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
+position:absolute; bottom:40px; left:50%;
+transform:translateX(-50%);
 display:flex; flex-direction:column; align-items:center; gap:12px;
 opacity:0; animation:fadeSlideUp 1s cubic-bezier(0.22,1,0.36,1) 1.6s forwards;
+white-space:nowrap;
 }
-.hero-scroll span { font-size:9px; letter-spacing:0.4em; color:#8A8278; text-transform:uppercase; }
+.hero-scroll span {
+font-size:9px; letter-spacing:0.25em; color:#8A8278;
+text-transform:uppercase;
+/* letter-spacingによる右ズレを補正 */
+padding-left:0.25em;
+}
 .scroll-line {
 width:1px; height:52px;
 background:linear-gradient(to bottom, #B79970, transparent);
@@ -253,15 +260,18 @@ transition:width 1.4s cubic-bezier(0.22,1,0.36,1) 0.2s;
 /* ═══════════════════════════════════
 SCROLL REVEAL
 ═══════════════════════════════════ */
-.vo-reveal {
-opacity:0; transform:translateY(48px);
-transition:opacity 1s cubic-bezier(0.22,1,0.36,1),
-transform 1s cubic-bezier(0.22,1,0.36,1);
+/* JS読み込み後のみ非表示→表示アニメ（iOS安全：JSなし/失敗時は常に表示） */
+.js-ready .vo-reveal {
+opacity:0; transform:translateY(36px);
+transition:opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
 }
-.vo-reveal.from-left  { transform:translateX(-48px); }
-.vo-reveal.from-right { transform:translateX(48px); }
-.vo-reveal.scale-in   { transform:scale(0.93); }
-.vo-reveal.vo-visible { opacity:1; transform:none; }
+.js-ready .vo-reveal.from-left  { transform:translateX(-36px); }
+.js-ready .vo-reveal.from-right { transform:translateX(36px); }
+.js-ready .vo-reveal.vo-visible { opacity:1 !important; transform:none !important; }
+@media(max-width:900px){
+.js-ready .vo-reveal.from-left,
+.js-ready .vo-reveal.from-right { transform:translateY(28px); }
+}
 .delay-1 { transition-delay:0.1s; }
 .delay-2 { transition-delay:0.2s; }
 .delay-3 { transition-delay:0.3s; }
@@ -1055,9 +1065,13 @@ var nav = document.getElementById(‘mainNav’);
 if(nav) nav.classList.toggle(‘scrolled’, window.scrollY > 60);
 }, {passive:true});
 
-// ── スクロールリビール（IntersectionObserver）
+// ── スクロールリビール（js-readyクラスで制御 → iOS安全）
 var revealEls = document.querySelectorAll(’.vo-reveal’);
-function showAll(){ revealEls.forEach(function(el){ el.classList.add(‘vo-visible’); }); }
+function showAll(){
+revealEls.forEach(function(el){ el.classList.add(‘vo-visible’); });
+}
+// jsが動いていればjs-readyを付与してアニメ有効化
+document.documentElement.classList.add(‘js-ready’);
 
 if(‘IntersectionObserver’ in window){
 var io = new IntersectionObserver(function(entries){
@@ -1067,9 +1081,10 @@ entry.target.classList.add(‘vo-visible’);
 io.unobserve(entry.target);
 }
 });
-}, {threshold: 0.07, rootMargin: ‘0px 0px -30px 0px’});
+}, {threshold: 0.06, rootMargin: ‘0px 0px -20px 0px’});
 revealEls.forEach(function(el){ io.observe(el); });
-setTimeout(showAll, 3500); // iOS保険
+// 2.5秒後に強制表示（iOS Safari保険）
+setTimeout(showAll, 2500);
 } else {
 showAll();
 }
