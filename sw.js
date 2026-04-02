@@ -1,62 +1,46 @@
-const CACHE_NAME = 'variorchestra-erp-v1';
-const ASSETS = [
+var CACHE_NAME = 'veliq-games-v2';
+var ASSETS = [
   '/Logical-Detox-/',
-  '/Logical-Detox-/index.html',
-  '/Logical-Detox-/manifest.json',
-  '/Logical-Detox-/icons/icon-192.png',
-  '/Logical-Detox-/icons/icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap'
+  '/Logical-Detox-/veliq-games/',
+  '/Logical-Detox-/veliq-games/index.html',
+  '/Logical-Detox-/veliq-games/manifest.json',
+  '/Logical-Detox-/veliq-games/games/game-001/index.html',
+  '/Logical-Detox-/veliq-games/games/game-002/index.html',
+  '/Logical-Detox-/veliq-games/games/game-003/index.html'
 ];
 
-// Install: cache all assets
-self.addEventListener('install', e => {
+self.addEventListener('install', function(e) {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS).catch(err => {
-        console.warn('Cache addAll partial fail:', err);
-      });
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.addAll(ASSETS);
     })
   );
   self.skipWaiting();
 });
 
-// Activate: clean old caches
-self.addEventListener('activate', e => {
+self.addEventListener('activate', function(e) {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
-      )
-    )
+    caches.keys().then(function(keys) {
+      return Promise.all(
+        keys.filter(function(k) { return k !== CACHE_NAME; }).map(function(k) { return caches.delete(k); })
+      );
+    })
   );
   self.clients.claim();
 });
 
-// Fetch: cache-first for assets, network-first for API calls
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-
-  // Always go network for AI API calls
-  if (
-    url.hostname.includes('googleapis.com') ||
-    url.hostname.includes('anthropic.com') ||
-    url.hostname.includes('sheets.googleapis.com')
-  ) {
-    return; // let browser handle normally
-  }
-
-  // Cache-first for everything else
+self.addEventListener('fetch', function(e) {
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(response => {
-        if (!response || response.status !== 200 || response.type === 'opaque') {
-          return response;
+    caches.match(e.request).then(function(cached) {
+      return cached || fetch(e.request).then(function(response) {
+        if (response && response.status === 200 && response.type === 'basic') {
+          var clone = response.clone();
+          caches.open(CACHE_NAME).then(function(cache) { cache.put(e.request, clone); });
         }
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
         return response;
-      }).catch(() => caches.match('/Logical-Detox-/'));
+      }).catch(function() {
+        return caches.match('/Logical-Detox-/veliq-games/');
+      });
     })
   );
 });
