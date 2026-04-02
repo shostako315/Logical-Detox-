@@ -172,6 +172,14 @@
     var answered = false;
     var rank = '';
 
+    // === SOUND EFFECTS ===
+    var audioCtx = null;
+    function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)()}
+    function playSound(freq,dur,type){try{initAudio();var o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(0.3,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}catch(e){}}
+    function playCorrect(){playSound(523,0.1,'sine');setTimeout(function(){playSound(659,0.1,'sine')},100);setTimeout(function(){playSound(784,0.15,'sine')},200)}
+    function playWrong(){playSound(200,0.3,'sawtooth')}
+    function vibrate(ms){if(navigator.vibrate)navigator.vibrate(ms)}
+
     function shuffle(arr) {
       for (var i = arr.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -223,9 +231,11 @@
         btn.classList.add('correct');
         score += 10;
         document.getElementById('feedback').innerHTML = '<span style="color:#C9A84C">⭕ 正解！</span>';
+        playCorrect(); vibrate(50);
       } else {
         btn.classList.add('wrong');
         document.getElementById('feedback').innerHTML = '<span style="color:#ff4444">❌ 不正解… 正解は ' + q.a + '</span>';
+        playWrong(); vibrate(100);
         // Reveal correct
         btns.forEach(function(b) {
           if (b.textContent === q.a) b.classList.add('reveal');

@@ -1,13 +1,14 @@
-var CACHE_NAME = 'veliq-games-v1';
+var CACHE_NAME = 'veliq-games-v2';
 var ASSETS = [
-  '/veliq-games/',
-  '/veliq-games/manifest.json',
-  '/veliq-games/shared/analytics.js',
-  '/veliq-games/shared/ads.js',
-  '/veliq-games/shared/share.js',
-  '/veliq-games/games/game-001/index.html',
-  '/veliq-games/games/game-002/index.html',
-  '/veliq-games/games/game-003/index.html'
+  './',
+  './index.html',
+  './manifest.json',
+  './shared/analytics.js',
+  './shared/ads.js',
+  './shared/share.js',
+  './games/game-001/index.html',
+  './games/game-002/index.html',
+  './games/game-003/index.html'
 ];
 
 self.addEventListener('install', function (event) {
@@ -47,7 +48,7 @@ self.addEventListener('fetch', function (event) {
         return response;
       }).catch(function () {
         // Offline fallback - return cached version if available
-        return caches.match('/veliq-games/');
+        return caches.match('./');
       });
     })
   );

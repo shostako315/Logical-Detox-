@@ -223,6 +223,15 @@
       });
     }
 
+    // === SOUND EFFECTS ===
+    var audioCtx=null;
+    function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)()}
+    function playSound(freq,dur,type){try{initAudio();var o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(0.2,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}catch(e){}}
+    function playProfit(){playSound(660,0.1,'sine');setTimeout(function(){playSound(880,0.15,'sine')},80)}
+    function playLoss(){playSound(330,0.2,'square')}
+    function playTrade(){playSound(440,0.05,'sine')}
+    function vibrate(ms){if(navigator.vibrate)navigator.vibrate(ms)}
+
     function updateUI() {
       var color = asset >= 10000 ? '#C9A84C' : '#ff4444';
       document.getElementById('asset-display').style.color = color;
@@ -273,10 +282,13 @@
 
       if (pnl > 0) {
         resultEl.innerHTML = '<span class="green">+' + formatYen(pnl) + ' (' + (change > 0 ? '+' : '') + (change * 100).toFixed(2) + '%)</span>';
+        playProfit(); vibrate(50);
       } else if (pnl < 0) {
         resultEl.innerHTML = '<span class="red">' + formatYen(pnl).replace('¥', '-¥') + ' (' + (change * 100).toFixed(2) + '%)</span>';
+        playLoss(); vibrate(100);
       } else {
         resultEl.innerHTML = '<span style="color:#aaa">様子見… (変動: ' + (change > 0 ? '+' : '') + (change * 100).toFixed(2) + '%)</span>';
+        playTrade();
       }
 
       turn++;

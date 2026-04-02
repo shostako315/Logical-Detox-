@@ -148,6 +148,29 @@
       '指揮棒折っていいよ'
     ];
 
+    // === SOUND EFFECTS (Web Audio API, no external files) ===
+    var audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    function playSound(freq, duration, type) {
+      try {
+        initAudio();
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+    function playHitSound() { playSound(880, 0.15, 'sine'); playSound(1320, 0.1, 'sine'); }
+    function playMissSound() { playSound(200, 0.3, 'sawtooth'); }
+    function playGameOverSound() { playSound(300, 0.2, 'square'); setTimeout(function(){playSound(200,0.3,'square')},200); }
+    function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
+
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(function(s){s.classList.add('hidden')});
       document.getElementById('screen-'+id).classList.remove('hidden');
@@ -228,6 +251,7 @@
       lives--;
       updateLives();
       showJudgment('MISS!', 'miss-text');
+      playMissSound(); vibrate(100);
       if (lives <= 0) gameOver();
     }
 
@@ -272,6 +296,7 @@
         score++;
         updateScore();
         showJudgment('PERFECT!', 'hit-text');
+        playHitSound(); vibrate(50);
       } else if (bestDist < 0.25) {
         // Close but no cigar - still a miss (this is the cruel part)
         bestNote.hit = true;
@@ -280,6 +305,7 @@
         updateLives();
         var nearMissMsgs = ['惜しい！…でもミス', 'あと少し！…嘘、全然ダメ', 'ほぼ正解！…ではない'];
         showJudgment(nearMissMsgs[Math.floor(Math.random() * nearMissMsgs.length)], 'miss-text');
+        playMissSound(); vibrate(100);
         if (lives <= 0) gameOver();
       }
       // If too far, ignore tap
@@ -289,6 +315,7 @@
       gameRunning = false;
       clearTimeout(noteTimer);
       clearInterval(batonTimer);
+      playGameOverSound(); vibrate([100,50,100,50,200]);
 
       document.getElementById('gameover-score').textContent = score;
       document.getElementById('taunt').textContent = taunts[Math.floor(Math.random() * taunts.length)];

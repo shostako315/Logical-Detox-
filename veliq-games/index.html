@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Veliq Games - ブラウザゲームで遊ぼう</title>
+  <meta name="description" content="無料で遊べるブラウザゲーム集。スマホ対応、ダウンロード不要。">
+  <meta name="theme-color" content="#C9A84C">
+
+  <meta property="og:title" content="Veliq Games - ブラウザゲームで遊ぼう">
+  <meta property="og:description" content="無料で遊べるブラウザゲーム集。スマホ対応、ダウンロード不要。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Veliq Games",
+    "description": "無料で遊べるブラウザゲーム集",
+    "author": { "@type": "Organization", "name": "Veliq Games" }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());gtag('config','G-XXXXXXXXXX');
+  </script>
+
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;min-height:100%;font-family:'Noto Sans JP',sans-serif;background:#000;color:#fff;-webkit-tap-highlight-color:transparent}
+
+    /* Header */
+    .site-header{text-align:center;padding:48px 20px 32px;border-bottom:1px solid #1a1a1a}
+    .logo{font-size:42px;font-weight:900;color:#C9A84C;letter-spacing:2px;margin-bottom:8px}
+    .logo span{color:#fff}
+    .tagline{color:#888;font-size:14px}
+
+    /* Game Grid */
+    .games-section{max-width:520px;margin:0 auto;padding:24px 16px 80px}
+    .section-title{font-size:14px;color:#666;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;padding-left:4px}
+
+    .game-card{display:block;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:16px;padding:24px;margin-bottom:16px;text-decoration:none;color:#fff;transition:border-color 0.3s,transform 0.2s}
+    .game-card:hover,.game-card:active{border-color:#C9A84C;transform:translateY(-2px)}
+    .game-card:active{transform:scale(0.98)}
+    .card-emoji{font-size:40px;margin-bottom:12px;display:block}
+    .card-title{font-size:20px;font-weight:900;color:#C9A84C;margin-bottom:8px}
+    .card-desc{font-size:14px;color:#999;line-height:1.6;margin-bottom:12px}
+    .card-tags{display:flex;gap:6px;flex-wrap:wrap}
+    .tag{padding:4px 10px;background:#111;border:1px solid #222;border-radius:20px;font-size:11px;color:#777}
+    .tag-hot{border-color:#C9A84C;color:#C9A84C;background:#1a1505}
+
+    /* Footer */
+    .site-footer{text-align:center;padding:24px;border-top:1px solid #1a1a1a;color:#444;font-size:12px}
+    .site-footer a{color:#C9A84C;text-decoration:none}
+
+    /* Ad */
+    .ad-container{max-width:520px;margin:24px auto;padding:0 16px;text-align:center;min-height:50px}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo"><span>V</span>ELIQ <span>G</span>AMES</div>
+    <p class="tagline">無料ブラウザゲーム｜スマホ対応｜ダウンロード不要</p>
+  </header>
+
+  <main class="games-section">
+    <div class="section-title">Games</div>
+
+    <a href="games/game-001/" class="game-card">
+      <span class="card-emoji">🎵</span>
+      <div class="card-title">天才指揮者になれ！</div>
+      <div class="card-desc">リズムに合わせてタップ！…でも判定が理不尽すぎて絶対クリアできない。煽りテキストが最高にウザい指揮者クソゲー。</div>
+      <div class="card-tags">
+        <span class="tag tag-hot">NEW</span>
+        <span class="tag">リズム</span>
+        <span class="tag">クソゲー</span>
+        <span class="tag">1分で遊べる</span>
+      </div>
+    </a>
+
+    <a href="games/game-002/" class="game-card">
+      <span class="card-emoji">🎼</span>
+      <div class="card-title">この曲、誰の曲？クラシック検定</div>
+      <div class="card-desc">ベートーヴェン？モーツァルト？有名クラシック曲の作曲家を当てる4択クイズ。全20問、初級〜上級であなたのランクは？</div>
+      <div class="card-tags">
+        <span class="tag tag-hot">NEW</span>
+        <span class="tag">クイズ</span>
+        <span class="tag">クラシック</span>
+        <span class="tag">全20問</span>
+      </div>
+    </a>
+
+    <a href="games/game-003/" class="game-card">
+      <span class="card-emoji">💹</span>
+      <div class="card-title">1万円を1億円にしろ！FXトレードゲーム</div>
+      <div class="card-desc">仮想為替チャートで売り買い判断。レバレッジ最大25倍、30ターンで億り人を目指せ！ハイスコアを更新しよう。</div>
+      <div class="card-tags">
+        <span class="tag tag-hot">NEW</span>
+        <span class="tag">投資</span>
+        <span class="tag">FX</span>
+        <span class="tag">ハイスコア</span>
+      </div>
+    </a>
+
+    <div class="ad-container" id="ad-top"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Veliq Games. All rights reserved.</p>
+    <p style="margin-top:8px"><a href="https://variorchestra.com" target="_blank">VariOrchestra</a></p>
+  </footer>
+
+  <script>
+    // Show ad
+    try {
+      var adEl = document.getElementById('ad-top');
+      adEl.innerHTML = '<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>';
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    } catch(e) {}
+
+    // PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function(){});
+    }
+  </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yourdomain.com/veliq-games/sitemap.xml
+Sitemap: https://shostako315.github.io/Logical-Detox-/sitemap.xml
