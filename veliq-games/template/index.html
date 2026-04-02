@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>{{GAME_TITLE}} | Veliq Games</title>
+  <meta name="description" content="{{GAME_DESCRIPTION}}">
+  <meta name="theme-color" content="#C9A84C">
+
+  <!-- OGP -->
+  <meta property="og:title" content="{{GAME_TITLE}} | Veliq Games">
+  <meta property="og:description" content="{{GAME_DESCRIPTION}}">
+  <meta property="og:image" content="{{OG_IMAGE_URL}}">
+  <meta property="og:url" content="{{GAME_URL}}">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "GameApplication",
+    "name": "{{GAME_TITLE}}",
+    "description": "{{GAME_DESCRIPTION}}",
+    "url": "{{GAME_URL}}",
+    "applicationCategory": "Game",
+    "operatingSystem": "Web Browser",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+    "author": { "@type": "Organization", "name": "Veliq Games" }
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <!-- PWA -->
+  <link rel="manifest" href="../../manifest.json">
+
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      font-family: 'Noto Sans JP', sans-serif;
+      background: #000; color: #fff;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    #app {
+      width: 100%; height: 100%;
+      max-width: 480px; margin: 0 auto;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+
+    /* Header */
+    #header {
+      padding: 12px 16px;
+      text-align: center;
+      border-bottom: 1px solid #222;
+    }
+    #game-title {
+      font-size: 20px; font-weight: 900;
+      color: #C9A84C;
+    }
+    #score-display {
+      font-size: 14px; color: #aaa;
+      margin-top: 4px;
+    }
+
+    /* Game Area */
+    #game-area {
+      flex: 1; position: relative;
+      overflow: hidden;
+    }
+
+    /* Screens */
+    .screen {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px; text-align: center;
+      transition: opacity 0.3s;
+      z-index: 10;
+    }
+    .screen.hidden { opacity: 0; pointer-events: none; z-index: 0; }
+
+    .screen h2 {
+      font-size: 28px; font-weight: 900;
+      color: #C9A84C; margin-bottom: 16px;
+    }
+    .screen p { color: #ccc; margin-bottom: 12px; line-height: 1.6; }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 14px 40px;
+      background: #C9A84C; color: #000;
+      font-size: 18px; font-weight: 700;
+      border: none; border-radius: 8px;
+      cursor: pointer; margin: 8px;
+      font-family: 'Noto Sans JP', sans-serif;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn-outline {
+      background: transparent; color: #C9A84C;
+      border: 2px solid #C9A84C;
+    }
+
+    /* Share Buttons */
+    .share-bar {
+      display: flex; gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap; margin-top: 16px;
+    }
+    .share-btn {
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .share-x { background: #000; color: #fff; border: 1px solid #555; }
+    .share-line { background: #06C755; color: #fff; }
+    .share-copy { background: #333; color: #fff; }
+
+    /* Ad Container */
+    .ad-container {
+      width: 100%; min-height: 50px;
+      margin: 12px 0; text-align: center;
+    }
+
+    /* Utility */
+    .gold { color: #C9A84C; }
+    .big { font-size: 48px; font-weight: 900; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="header">
+      <div id="game-title">{{GAME_TITLE}}</div>
+      <div id="score-display"></div>
+    </div>
+
+    <div id="game-area">
+      <!-- Start Screen -->
+      <div id="screen-start" class="screen">
+        <h2>{{GAME_TITLE}}</h2>
+        <p>{{GAME_DESCRIPTION}}</p>
+        <button class="btn" onclick="gameStart()">スタート</button>
+      </div>
+
+      <!-- Play Screen -->
+      <div id="screen-play" class="screen hidden">
+        <!-- Game content injected here -->
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="screen-gameover" class="screen hidden">
+        <h2>GAME OVER</h2>
+        <p id="gameover-message"></p>
+        <p id="gameover-score" class="gold big"></p>
+        <div class="ad-container" id="ad-gameover"></div>
+        <div class="share-bar">
+          <button class="share-btn share-x" onclick="shareX()">Xでシェア</button>
+          <button class="share-btn share-line" onclick="shareLINE()">LINEでシェア</button>
+          <button class="share-btn share-copy" onclick="copyLink()">URLコピー</button>
+        </div>
+        <button class="btn" style="margin-top:16px" onclick="gameStart()">もう一回</button>
+      </div>
+
+      <!-- Clear Screen -->
+      <div id="screen-clear" class="screen hidden">
+        <h2>CLEAR!</h2>
+        <p id="clear-message"></p>
+        <p id="clear-score" class="gold big"></p>
+        <div class="ad-container" id="ad-clear"></div>
+        <div class="share-bar">
+          <button class="share-btn share-x" onclick="shareX()">Xでシェア</button>
+          <button class="share-btn share-line" onclick="shareLINE()">LINEでシェア</button>
+          <button class="share-btn share-copy" onclick="copyLink()">URLコピー</button>
+        </div>
+        <button class="btn" style="margin-top:16px" onclick="gameStart()">もう一回</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === TEMPLATE CONFIG (override in each game) ===
+    var GAME_NAME = '{{GAME_NAME}}';
+    var SHARE_TEXT = '{{SHARE_TEXT_TEMPLATE}}';
+    var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+    var AD_CLIENT = 'ca-pub-XXXXXXXXXXXXXXXX';
+    var playCount = 0;
+
+    // === SCREEN MANAGEMENT ===
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function(s) { s.classList.add('hidden'); });
+      document.getElementById('screen-' + id).classList.remove('hidden');
+    }
+
+    // === AD HOOKS ===
+    function showAd(containerId) {
+      var c = document.getElementById(containerId);
+      if (!c) return;
+      c.innerHTML = '<ins class="adsbygoogle" style="display:block" data-ad-client="' + AD_CLIENT + '" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>';
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+    }
+
+    function showInterstitial() {
+      playCount++;
+      if (playCount % 5 !== 0) return;
+      var o = document.createElement('div');
+      o.id = 'veliq-interstitial';
+      o.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center;';
+      o.innerHTML = '<div style="background:#111;border:1px solid #C9A84C;border-radius:12px;padding:24px;max-width:340px;width:90%;text-align:center;">' +
+        '<p style="color:#C9A84C;margin-bottom:16px;">広告</p>' +
+        '<ins class="adsbygoogle" style="display:block" data-ad-client="' + AD_CLIENT + '" data-ad-slot="XXXXXXXXXX" data-ad-format="auto"></ins>' +
+        '<button onclick="document.getElementById(\'veliq-interstitial\').remove()" style="margin-top:16px;padding:10px 32px;background:#C9A84C;color:#000;border:none;border-radius:6px;font-size:16px;cursor:pointer;">閉じる</button></div>';
+      document.body.appendChild(o);
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+    }
+
+    // === GA4 EVENTS ===
+    function trackEvent(name, params) {
+      if (typeof gtag === 'function') gtag('event', name, params || {});
+    }
+
+    // === SHARE FUNCTIONS ===
+    function getShareText(data) {
+      var text = SHARE_TEXT;
+      for (var k in data) { text = text.replace(new RegExp('\\{' + k + '\\}', 'g'), data[k]); }
+      return text;
+    }
+    function shareX() {
+      trackEvent('share_click', { game_name: GAME_NAME, platform: 'twitter' });
+      var text = typeof buildShareData === 'function' ? getShareText(buildShareData()) : SHARE_TEXT;
+      window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(location.href), '_blank', 'width=550,height=420');
+    }
+    function shareLINE() {
+      trackEvent('share_click', { game_name: GAME_NAME, platform: 'line' });
+      var text = typeof buildShareData === 'function' ? getShareText(buildShareData()) : SHARE_TEXT;
+      window.open('https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(location.href) + '&text=' + encodeURIComponent(text), '_blank');
+    }
+    function copyLink() {
+      trackEvent('share_click', { game_name: GAME_NAME, platform: 'copy' });
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(location.href).then(function() { alert('URLをコピーしました！'); });
+      } else {
+        var t = document.createElement('textarea'); t.value = location.href;
+        t.style.cssText = 'position:fixed;opacity:0;'; document.body.appendChild(t);
+        t.select(); document.execCommand('copy'); document.body.removeChild(t);
+        alert('URLをコピーしました！');
+      }
+    }
+
+    // === PWA ===
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('../../sw.js').catch(function() {});
+    }
+
+    // === GAME HOOKS (override in each game) ===
+    // function gameStart() {}
+    // function buildShareData() { return {}; }
+  </script>
+</body>
+</html>

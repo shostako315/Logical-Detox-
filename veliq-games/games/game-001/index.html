@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>天才指揮者になれ！ | Veliq Games</title>
+  <meta name="description" content="リズムに合わせてタップ！理不尽な判定に挑戦する指揮者クソゲー">
+  <meta name="theme-color" content="#C9A84C">
+
+  <meta property="og:title" content="天才指揮者になれ！ | Veliq Games">
+  <meta property="og:description" content="リズムに合わせてタップ！理不尽な判定に挑戦する指揮者クソゲー">
+  <meta property="og:image" content="">
+  <meta property="og:url" content="">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "GameApplication",
+    "name": "天才指揮者になれ！",
+    "description": "リズムに合わせてタップ！理不尽な判定に挑戦する指揮者クソゲー",
+    "applicationCategory": "Game",
+    "operatingSystem": "Web Browser",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+    "author": { "@type": "Organization", "name": "Veliq Games" }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="manifest" href="../../manifest.json">
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());gtag('config','G-XXXXXXXXXX');
+  </script>
+
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;height:100%;font-family:'Noto Sans JP',sans-serif;background:#000;color:#fff;overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    #app{width:100%;height:100%;max-width:480px;margin:0 auto;position:relative;display:flex;flex-direction:column}
+    #header{padding:12px 16px;text-align:center;border-bottom:1px solid #222}
+    #game-title{font-size:20px;font-weight:900;color:#C9A84C}
+    #score-display{font-size:14px;color:#aaa;margin-top:4px}
+    #game-area{flex:1;position:relative;overflow:hidden}
+    .screen{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;transition:opacity 0.3s;z-index:10}
+    .screen.hidden{opacity:0;pointer-events:none;z-index:0}
+    .screen h2{font-size:28px;font-weight:900;color:#C9A84C;margin-bottom:16px}
+    .screen p{color:#ccc;margin-bottom:12px;line-height:1.6}
+    .btn{display:inline-block;padding:14px 40px;background:#C9A84C;color:#000;font-size:18px;font-weight:700;border:none;border-radius:8px;cursor:pointer;margin:8px;font-family:'Noto Sans JP',sans-serif;transition:transform 0.1s}
+    .btn:active{transform:scale(0.95)}
+    .btn-outline{background:transparent;color:#C9A84C;border:2px solid #C9A84C}
+    .share-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+    .share-btn{padding:10px 16px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif}
+    .share-x{background:#000;color:#fff;border:1px solid #555}
+    .share-line{background:#06C755;color:#fff}
+    .share-copy{background:#333;color:#fff}
+    .ad-container{width:100%;min-height:50px;margin:12px 0;text-align:center}
+    .gold{color:#C9A84C}.big{font-size:48px;font-weight:900}
+
+    /* Game-specific styles */
+    #conductor-stage{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:80px}
+    #baton{width:6px;height:120px;background:linear-gradient(to bottom,#C9A84C,#fff);border-radius:3px;transform-origin:bottom center;transform:rotate(0deg);transition:transform 0.15s;position:absolute;bottom:30%;left:50%;margin-left:-3px}
+    #tap-zone{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:120px;height:120px;border:3px solid #C9A84C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#C9A84C;opacity:0.6}
+    .note{position:absolute;width:40px;height:40px;border-radius:50%;background:#C9A84C;display:flex;align-items:center;justify-content:center;font-size:20px;color:#000;font-weight:900;left:50%;margin-left:-20px;top:-50px;animation:noteFall linear forwards}
+    @keyframes noteFall{0%{top:-50px;opacity:1}100%{top:calc(100% - 140px);opacity:1}}
+    #hit-zone-line{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);width:80%;height:2px;background:#C9A84C;opacity:0.3}
+    .judgment{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:32px;font-weight:900;animation:judgmentPop 0.6s forwards;pointer-events:none;z-index:20}
+    @keyframes judgmentPop{0%{opacity:1;transform:translate(-50%,-50%) scale(0.5)}30%{transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-80%) scale(1)}}
+    .miss-text{color:#ff4444}
+    .hit-text{color:#C9A84C}
+    #lives{display:flex;gap:6px;justify-content:center;margin-top:4px}
+    .heart{font-size:16px}
+    .heart.lost{opacity:0.2}
+    #taunt{color:#ff4444;font-size:20px;font-weight:900;margin-bottom:16px;min-height:60px;display:flex;align-items:center;justify-content:center;line-height:1.4}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="header">
+      <div id="game-title">天才指揮者になれ！</div>
+      <div id="score-display">SCORE: 0</div>
+      <div id="lives"></div>
+    </div>
+
+    <div id="game-area">
+      <!-- Start Screen -->
+      <div id="screen-start" class="screen">
+        <h2>🎵 天才指揮者になれ！</h2>
+        <p>落ちてくる○にタイミングを合わせてタップ！<br>…ただし判定は<span class="gold">超シビア</span>だ。</p>
+        <button class="btn" onclick="gameStart()">スタート</button>
+      </div>
+
+      <!-- Play Screen -->
+      <div id="screen-play" class="screen hidden">
+        <div id="conductor-stage">
+          <div id="baton"></div>
+          <div id="hit-zone-line"></div>
+          <div id="tap-zone">TAP!</div>
+        </div>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="screen-gameover" class="screen hidden">
+        <h2>GAME OVER</h2>
+        <div id="taunt"></div>
+        <p>スコア</p>
+        <p id="gameover-score" class="gold big"></p>
+        <div class="ad-container" id="ad-gameover"></div>
+        <div class="share-bar">
+          <button class="share-btn share-x" onclick="shareX()">Xでシェア</button>
+          <button class="share-btn share-line" onclick="shareLINE()">LINEでシェア</button>
+          <button class="share-btn share-copy" onclick="copyLink()">URLコピー</button>
+        </div>
+        <button class="btn" style="margin-top:16px" onclick="gameStart()">もう一回</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var GAME_NAME = 'conductor';
+    var SHARE_TEXT = '指揮者ゲームで{score}回成功した！お前は何回できる？ #VeliqGames';
+    var AD_CLIENT = 'ca-pub-XXXXXXXXXXXXXXXX';
+    var playCount = 0;
+    var score = 0;
+    var lives = 3;
+    var gameRunning = false;
+    var noteTimer = null;
+    var batonTimer = null;
+    var notes = [];
+    var batonAngle = 0;
+    var batonDir = 1;
+
+    var taunts = [
+      'お前には無理だ',
+      '指揮者の才能ゼロ',
+      'もう一回？（笑）',
+      'リズム感壊滅的だな',
+      '音楽の神に見放されてる',
+      'メトロノームでも買えば？',
+      '才能のかけらもない',
+      'え、本気で押したの？',
+      '練習しても無駄だよ',
+      '指揮棒折っていいよ'
+    ];
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function(s){s.classList.add('hidden')});
+      document.getElementById('screen-'+id).classList.remove('hidden');
+    }
+
+    function updateScore() {
+      document.getElementById('score-display').textContent = 'SCORE: ' + score;
+    }
+
+    function updateLives() {
+      var html = '';
+      for (var i = 0; i < 3; i++) {
+        html += '<span class="heart' + (i >= lives ? ' lost' : '') + '">♥</span>';
+      }
+      document.getElementById('lives').innerHTML = html;
+    }
+
+    function gameStart() {
+      score = 0; lives = 3; gameRunning = true; notes = [];
+      updateScore(); updateLives();
+      showScreen('play');
+      if(typeof gtag==='function') gtag('event','game_start',{game_name:GAME_NAME});
+
+      // Clear existing notes
+      var stage = document.getElementById('conductor-stage');
+      stage.querySelectorAll('.note').forEach(function(n){n.remove()});
+
+      // Start dropping notes
+      scheduleNote();
+      startBaton();
+    }
+
+    function scheduleNote() {
+      if (!gameRunning) return;
+      var delay = 1200 + Math.random() * 800;
+      noteTimer = setTimeout(function() {
+        if (!gameRunning) return;
+        dropNote();
+        scheduleNote();
+      }, delay);
+    }
+
+    function dropNote() {
+      var stage = document.getElementById('conductor-stage');
+      var note = document.createElement('div');
+      note.className = 'note';
+      note.textContent = '○';
+      var duration = 1.5 + Math.random() * 0.5;
+      note.style.animationDuration = duration + 's';
+      stage.appendChild(note);
+
+      var noteObj = { el: note, startTime: Date.now(), duration: duration * 1000, hit: false };
+      notes.push(noteObj);
+
+      // Auto-miss when note reaches bottom
+      setTimeout(function() {
+        if (!noteObj.hit && gameRunning) {
+          noteMiss(noteObj);
+        }
+      }, duration * 1000);
+    }
+
+    function startBaton() {
+      batonAngle = 0; batonDir = 1;
+      clearInterval(batonTimer);
+      batonTimer = setInterval(function() {
+        batonAngle += batonDir * 3;
+        if (batonAngle > 30) batonDir = -1;
+        if (batonAngle < -30) batonDir = 1;
+        document.getElementById('baton').style.transform = 'rotate(' + batonAngle + 'deg)';
+      }, 30);
+    }
+
+    function noteMiss(noteObj) {
+      if (noteObj.hit) return;
+      noteObj.hit = true;
+      noteObj.el.remove();
+      lives--;
+      updateLives();
+      showJudgment('MISS!', 'miss-text');
+      if (lives <= 0) gameOver();
+    }
+
+    function showJudgment(text, cls) {
+      var j = document.createElement('div');
+      j.className = 'judgment ' + cls;
+      j.textContent = text;
+      document.getElementById('conductor-stage').appendChild(j);
+      setTimeout(function() { j.remove(); }, 600);
+    }
+
+    function handleTap() {
+      if (!gameRunning) return;
+
+      // Find the closest note to the hit zone
+      var now = Date.now();
+      var bestNote = null;
+      var bestDist = Infinity;
+
+      for (var i = 0; i < notes.length; i++) {
+        if (notes[i].hit) continue;
+        var elapsed = now - notes[i].startTime;
+        var progress = elapsed / notes[i].duration;
+        // Hit zone is at ~85% of the fall
+        var dist = Math.abs(progress - 0.85);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestNote = notes[i];
+        }
+      }
+
+      if (!bestNote) return;
+
+      // THE CRUEL PART: hit window looks generous but is actually tiny (3% instead of ~15%)
+      if (bestDist < 0.03) {
+        // Success!
+        bestNote.hit = true;
+        bestNote.el.style.background = '#C9A84C';
+        bestNote.el.style.transform = 'scale(1.5)';
+        bestNote.el.style.opacity = '0';
+        setTimeout(function() { bestNote.el.remove(); }, 200);
+        score++;
+        updateScore();
+        showJudgment('PERFECT!', 'hit-text');
+      } else if (bestDist < 0.25) {
+        // Close but no cigar - still a miss (this is the cruel part)
+        bestNote.hit = true;
+        bestNote.el.remove();
+        lives--;
+        updateLives();
+        var nearMissMsgs = ['惜しい！…でもミス', 'あと少し！…嘘、全然ダメ', 'ほぼ正解！…ではない'];
+        showJudgment(nearMissMsgs[Math.floor(Math.random() * nearMissMsgs.length)], 'miss-text');
+        if (lives <= 0) gameOver();
+      }
+      // If too far, ignore tap
+    }
+
+    function gameOver() {
+      gameRunning = false;
+      clearTimeout(noteTimer);
+      clearInterval(batonTimer);
+
+      document.getElementById('gameover-score').textContent = score;
+      document.getElementById('taunt').textContent = taunts[Math.floor(Math.random() * taunts.length)];
+
+      if(typeof gtag==='function') gtag('event','game_over',{game_name:GAME_NAME,score:score});
+
+      showScreen('gameover');
+      showAd('ad-gameover');
+      showInterstitial();
+    }
+
+    function buildShareData() { return { score: score }; }
+
+    // Tap/Click handler
+    document.getElementById('screen-play').addEventListener('click', handleTap);
+    document.getElementById('screen-play').addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      handleTap();
+    }, { passive: false });
+
+    // === COMMON FUNCTIONS ===
+    function showAd(containerId) {
+      var c = document.getElementById(containerId);
+      if (!c) return;
+      c.innerHTML = '<ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>';
+      try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+    }
+    function showInterstitial() {
+      playCount++;
+      if(playCount%5!==0)return;
+      var o=document.createElement('div');o.id='veliq-interstitial';
+      o.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center;';
+      o.innerHTML='<div style="background:#111;border:1px solid #C9A84C;border-radius:12px;padding:24px;max-width:340px;width:90%;text-align:center;"><p style="color:#C9A84C;margin-bottom:16px;">広告</p><ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto"></ins><button onclick="document.getElementById(\'veliq-interstitial\').remove()" style="margin-top:16px;padding:10px 32px;background:#C9A84C;color:#000;border:none;border-radius:6px;font-size:16px;cursor:pointer;">閉じる</button></div>';
+      document.body.appendChild(o);
+      try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+    }
+    function getShareText(data){var t=SHARE_TEXT;for(var k in data){t=t.replace(new RegExp('\\{'+k+'\\}','g'),data[k])}return t}
+    function shareX(){
+      if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'twitter'});
+      var text=getShareText(buildShareData());
+      window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(location.href),'_blank','width=550,height=420');
+    }
+    function shareLINE(){
+      if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'line'});
+      var text=getShareText(buildShareData());
+      window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(text),'_blank');
+    }
+    function copyLink(){
+      if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'copy'});
+      if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){alert('URLをコピーしました！')})}
+      else{var t=document.createElement('textarea');t.value=location.href;t.style.cssText='position:fixed;opacity:0;';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);alert('URLをコピーしました！')}
+    }
+    if('serviceWorker' in navigator){navigator.serviceWorker.register('../../sw.js').catch(function(){})}
+  </script>
+</body>
+</html>
