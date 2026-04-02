@@ -6,14 +6,12 @@
   <title>この曲、誰の曲？クラシック検定 | Veliq Games</title>
   <meta name="description" content="有名クラシック曲の作曲家を当てろ！初級から上級まで全20問のクイズ">
   <meta name="theme-color" content="#C9A84C">
-
   <meta property="og:title" content="この曲、誰の曲？クラシック検定 | Veliq Games">
   <meta property="og:description" content="有名クラシック曲の作曲家を当てろ！初級から上級まで全20問のクイズ">
   <meta property="og:image" content="">
   <meta property="og:url" content="">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -26,258 +24,550 @@
     "author": { "@type": "Organization", "name": "Veliq Games" }
   }
   </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="manifest" href="../../manifest.json">
-
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
     window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
     gtag('js',new Date());gtag('config','G-XXXXXXXXXX');
   </script>
-
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    html,body{width:100%;height:100%;font-family:'Noto Sans JP',sans-serif;background:#000;color:#fff;overflow-x:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-    #app{width:100%;min-height:100%;max-width:480px;margin:0 auto;position:relative;display:flex;flex-direction:column}
-    #header{padding:12px 16px;text-align:center;border-bottom:1px solid #222;position:sticky;top:0;background:#000;z-index:5}
-    #game-title{font-size:18px;font-weight:900;color:#C9A84C}
-    #score-display{font-size:14px;color:#aaa;margin-top:4px}
-    #game-area{flex:1;position:relative;overflow-y:auto}
-    .screen{position:absolute;top:0;left:0;width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;transition:opacity 0.3s;z-index:10}
-    .screen.hidden{opacity:0;pointer-events:none;z-index:0}
-    .screen h2{font-size:24px;font-weight:900;color:#C9A84C;margin-bottom:16px}
-    .screen p{color:#ccc;margin-bottom:12px;line-height:1.6}
-    .btn{display:inline-block;padding:14px 40px;background:#C9A84C;color:#000;font-size:18px;font-weight:700;border:none;border-radius:8px;cursor:pointer;margin:8px;font-family:'Noto Sans JP',sans-serif;transition:transform 0.1s}
-    .btn:active{transform:scale(0.95)}
-    .share-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-    .share-btn{padding:10px 16px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif}
+    html,body{width:100%;height:100%;font-family:'Noto Sans JP',sans-serif;background:#000;color:#fff;overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    #app{width:100%;height:100%;max-width:480px;margin:0 auto;position:relative;display:flex;flex-direction:column;overflow:hidden}
+
+    /* Header */
+    #header{padding:10px 16px 6px;background:#000;z-index:50;flex-shrink:0}
+    #header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    #game-title{font-size:15px;font-weight:900;color:#C9A84C}
+    #score-display{font-size:20px;font-weight:900;color:#fff;position:relative}
+    #score-float{position:absolute;right:0;top:-20px;font-size:14px;font-weight:700;color:#C9A84C;opacity:0;pointer-events:none}
+    #progress-bar-container{width:100%;height:6px;background:#222;border-radius:3px;overflow:hidden}
+    #progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#C9A84C,#FFD700);border-radius:3px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1)}
+
+    /* Screens */
+    #game-area{flex:1;position:relative;overflow:hidden}
+    .screen{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;opacity:0;pointer-events:none;z-index:0;transition:none}
+    .screen.active{opacity:1;pointer-events:auto;z-index:10}
+
+    /* Start screen */
+    .start-icon{font-size:64px;margin-bottom:16px}
+    .start-title{font-size:26px;font-weight:900;color:#C9A84C;margin-bottom:8px;line-height:1.3}
+    .start-sub{color:#aaa;font-size:14px;margin-bottom:24px;line-height:1.6}
+    .btn-start{padding:16px 48px;background:linear-gradient(135deg,#C9A84C,#FFD700);color:#000;font-size:20px;font-weight:900;border:none;border-radius:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.15s,box-shadow 0.15s}
+    .btn-start:active{transform:scale(0.95);box-shadow:0 2px 10px rgba(201,168,76,0.3)}
+
+    /* Quiz screen */
+    #quiz-slide-container{width:100%;height:100%;position:relative;overflow:hidden}
+    .quiz-card{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;padding:20px 20px 24px;opacity:0;transform:translateX(100%);transition:none}
+    .quiz-card.current{opacity:1;transform:translateX(0)}
+    .quiz-card.slide-in{transition:transform 0.35s cubic-bezier(0.4,0,0.2,1),opacity 0.35s;opacity:1;transform:translateX(0)}
+    .quiz-card.slide-out{transition:transform 0.35s cubic-bezier(0.4,0,0.2,1),opacity 0.35s;opacity:0;transform:translateX(-100%)}
+
+    .quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-shrink:0}
+    .q-num{color:#888;font-size:13px;font-weight:700}
+    .diff-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px}
+    .diff-beginner{background:#1a3a1a;color:#4ade80;border:1px solid #2d5a2d}
+    .diff-intermediate{background:#3a3520;color:#fbbf24;border:1px solid #5a4a2d}
+    .diff-advanced{background:#3a1a1a;color:#f87171;border:1px solid #5a2d2d}
+
+    /* Timer */
+    .timer-container{display:flex;align-items:center;justify-content:center;margin-bottom:16px;flex-shrink:0}
+    .timer-ring{width:56px;height:56px;position:relative}
+    .timer-ring svg{width:56px;height:56px;transform:rotate(-90deg)}
+    .timer-ring circle{fill:none;stroke-width:4}
+    .timer-bg{stroke:#222}
+    .timer-fg{stroke:#C9A84C;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke 0.3s}
+    .timer-fg.warn{stroke:#f87171}
+    .timer-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;font-weight:900;color:#fff}
+    .timer-text.warn{color:#f87171}
+
+    /* Question */
+    .q-text{font-size:20px;font-weight:900;color:#fff;margin-bottom:20px;line-height:1.5;flex-shrink:0}
+
+    /* Streak */
+    #streak-bar{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:100;font-size:16px;font-weight:900;color:#FFD700;opacity:0;transition:opacity 0.3s;pointer-events:none;text-shadow:0 0 10px rgba(255,165,0,0.8)}
+    #streak-bar.visible{opacity:1}
+
+    /* Choices */
+    .choices-area{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px}
+    .choice-btn{display:flex;align-items:center;width:100%;min-height:52px;padding:14px 16px;background:#111;border:2px solid #333;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;text-align:left;font-family:'Noto Sans JP',sans-serif;transition:border-color 0.2s,background 0.2s,transform 0.1s,box-shadow 0.3s;position:relative;overflow:hidden}
+    .choice-btn:active{transform:scale(0.98)}
+    .choice-btn.correct{border-color:#C9A84C;background:linear-gradient(135deg,#2a2510,#3a3520);color:#FFD700;box-shadow:0 0 20px rgba(201,168,76,0.3);animation:pulse-gold 0.6s}
+    .choice-btn.wrong{border-color:#ef4444;background:linear-gradient(135deg,#2a1010,#3a1515);color:#ff6b6b;animation:shake 0.4s}
+    .choice-btn.reveal{border-color:#C9A84C;background:#1a1a10;color:#C9A84C}
+    .choice-btn.disabled{pointer-events:none}
+    .choice-label{width:24px;height:24px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#888;margin-right:12px;flex-shrink:0}
+    .choice-btn.correct .choice-label{background:#C9A84C;color:#000}
+    .choice-btn.wrong .choice-label{background:#ef4444;color:#fff}
+
+    @keyframes pulse-gold{0%{box-shadow:0 0 0 rgba(201,168,76,0)}50%{box-shadow:0 0 30px rgba(201,168,76,0.5)}100%{box-shadow:0 0 20px rgba(201,168,76,0.3)}}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+    @keyframes float-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-40px)}}
+    @keyframes count-pop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+
+    /* Feedback overlay */
+    .feedback-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:80px;z-index:20;pointer-events:none;opacity:0}
+    .feedback-icon.show{animation:feedback-pop 0.6s forwards}
+    @keyframes feedback-pop{0%{opacity:0;transform:translate(-50%,-50%) scale(0)}40%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}60%{transform:translate(-50%,-50%) scale(0.9)}80%{transform:translate(-50%,-50%) scale(1.05)}100%{opacity:0.8;transform:translate(-50%,-50%) scale(1)}}
+
+    /* Point float */
+    .point-float{position:absolute;top:40%;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;color:#FFD700;pointer-events:none;animation:float-up 1s forwards;z-index:25}
+
+    /* Result screen */
+    #screen-result{overflow-y:auto;justify-content:flex-start;padding-top:20px}
+    .result-rank{font-size:100px;font-weight:900;line-height:1;margin:8px 0}
+    .rank-s{color:#FFD700;text-shadow:0 0 30px rgba(255,215,0,0.6)}
+    .rank-a{color:#C9A84C;text-shadow:0 0 20px rgba(201,168,76,0.4)}
+    .rank-b{color:#60a5fa}
+    .rank-c{color:#a78bfa}
+    .rank-d{color:#888}
+    .result-score{font-size:36px;font-weight:900;color:#fff;margin:4px 0}
+    .result-msg{color:#aaa;font-size:14px;margin-bottom:16px}
+
+    .breakdown{width:100%;background:#111;border-radius:12px;padding:16px;margin-bottom:16px;text-align:left}
+    .breakdown h3{color:#C9A84C;font-size:14px;margin-bottom:10px;text-align:center}
+    .breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #222}
+    .breakdown-row:last-child{border-bottom:none}
+    .breakdown-label{font-size:13px;color:#aaa}
+    .breakdown-value{font-size:14px;font-weight:700}
+    .breakdown-value.good{color:#4ade80}
+    .breakdown-value.mid{color:#fbbf24}
+    .breakdown-value.bad{color:#f87171}
+
+    .promo-card{width:100%;background:linear-gradient(135deg,#111,#1a1a10);border:1px solid #C9A84C;border-radius:12px;padding:20px;margin:12px 0;text-align:center}
+    .promo-card h3{color:#C9A84C;font-size:15px;margin-bottom:6px}
+    .promo-card p{font-size:13px;color:#aaa;margin-bottom:12px}
+    .promo-link{display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#C9A84C,#FFD700);color:#000;font-weight:900;font-size:15px;border-radius:8px;text-decoration:none}
+
+    .share-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+    .share-btn{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif;transition:transform 0.1s}
+    .share-btn:active{transform:scale(0.95)}
     .share-x{background:#000;color:#fff;border:1px solid #555}
     .share-line{background:#06C755;color:#fff}
     .share-copy{background:#333;color:#fff}
+
+    .btn-retry{padding:14px 40px;background:linear-gradient(135deg,#C9A84C,#FFD700);color:#000;font-size:17px;font-weight:900;border:none;border-radius:10px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin:8px 0 24px;box-shadow:0 4px 16px rgba(201,168,76,0.3)}
+    .btn-retry:active{transform:scale(0.95)}
+
     .ad-container{width:100%;min-height:50px;margin:12px 0;text-align:center}
-    .gold{color:#C9A84C}.big{font-size:48px;font-weight:900}
-
-    /* Quiz styles */
-    #quiz-container{width:100%;padding:20px}
-    #question-num{color:#C9A84C;font-size:14px;margin-bottom:8px}
-    #difficulty-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:12px}
-    .diff-easy{background:#2d5a2d;color:#6dff6d}
-    .diff-medium{background:#5a4a2d;color:#ffcc44}
-    .diff-hard{background:#5a2d2d;color:#ff6d6d}
-    #question-text{font-size:22px;font-weight:900;color:#fff;margin-bottom:24px;line-height:1.4}
-    .choice-btn{display:block;width:100%;padding:16px;margin:8px 0;background:#111;border:2px solid #333;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;text-align:left;font-family:'Noto Sans JP',sans-serif;transition:border-color 0.2s,background 0.2s}
-    .choice-btn:active{transform:scale(0.98)}
-    .choice-btn.correct{border-color:#C9A84C;background:#2a2510;color:#C9A84C}
-    .choice-btn.wrong{border-color:#ff4444;background:#2a1010;color:#ff4444}
-    .choice-btn.reveal{border-color:#C9A84C;background:#2a2510;color:#C9A84C}
-    #feedback{font-size:18px;font-weight:900;margin-top:16px;min-height:30px}
-
-    /* Result */
-    #rank-display{font-size:80px;margin:12px 0}
-    .promo-card{background:#111;border:1px solid #C9A84C;border-radius:12px;padding:20px;margin:16px 0;text-align:center}
-    .promo-card h3{color:#C9A84C;font-size:16px;margin-bottom:8px}
-    .promo-card p{font-size:14px;color:#aaa;margin-bottom:12px}
-    .promo-link{color:#C9A84C;text-decoration:underline;font-weight:700;font-size:16px}
   </style>
-</head>
-<body>
+</head><body>
   <div id="app">
     <div id="header">
-      <div id="game-title">🎼 クラシック検定</div>
-      <div id="score-display">SCORE: 0 / Q1</div>
+      <div id="header-top">
+        <div id="game-title">&#127932; クラシック検定</div>
+        <div id="score-display">0<span id="score-float"></span></div>
+      </div>
+      <div id="progress-bar-container"><div id="progress-bar"></div></div>
     </div>
+    <div id="streak-bar"></div>
 
     <div id="game-area">
       <!-- Start Screen -->
-      <div id="screen-start" class="screen">
-        <h2>🎼 この曲、誰の曲？</h2>
-        <p>有名クラシック曲の作曲家を4択で答えよう！<br>全20問、初級〜上級の3段階！</p>
-        <button class="btn" onclick="gameStart()">スタート</button>
+      <div id="screen-start" class="screen active">
+        <div class="start-icon">&#127932;</div>
+        <div class="start-title">この曲、誰の曲？<br>クラシック検定</div>
+        <p class="start-sub">有名クラシック曲の作曲家を4択で答えよう！<br>全20問 &#183; 初級～上級の3段階<br>制限時間は1問15秒！</p>
+        <button class="btn-start" onclick="gameStart()">&#9654; スタート</button>
       </div>
 
       <!-- Play Screen -->
-      <div id="screen-play" class="screen hidden">
-        <div id="quiz-container">
-          <div id="question-num"></div>
-          <div id="difficulty-badge"></div>
-          <div id="question-text"></div>
-          <div id="choices"></div>
-          <div id="feedback"></div>
-        </div>
+      <div id="screen-play" class="screen">
+        <div id="quiz-slide-container"></div>
       </div>
 
-      <!-- Clear Screen -->
-      <div id="screen-clear" class="screen hidden">
-        <h2>結果発表</h2>
-        <div id="rank-display" class="gold"></div>
-        <p id="clear-message"></p>
-        <p>スコア</p>
-        <p id="clear-score" class="gold big"></p>
-        <div class="ad-container" id="ad-clear"></div>
-
+      <!-- Result Screen -->
+      <div id="screen-result" class="screen">
+        <div style="font-size:14px;color:#888;margin-bottom:4px">YOUR RANK</div>
+        <div id="result-rank" class="result-rank"></div>
+        <div id="result-score" class="result-score"></div>
+        <div id="result-msg" class="result-msg"></div>
+        <div id="result-breakdown" class="breakdown"></div>
+        <div class="ad-container" id="ad-result"></div>
         <div class="promo-card">
-          <h3>🎻 本物のクラシックを聴きたくなった？</h3>
+          <h3>&#127931; 本物のクラシックを聴きたくなった？</h3>
           <p>本物の指揮者によるクラシックコンサートはこちら</p>
-          <a class="promo-link" href="https://variorchestra.com" target="_blank" rel="noopener">→ VariOrchestra</a>
+          <a class="promo-link" href="https://variorchestra.com" target="_blank" rel="noopener">&#8594; VariOrchestra</a>
         </div>
-
         <div class="share-bar">
           <button class="share-btn share-x" onclick="shareX()">Xでシェア</button>
           <button class="share-btn share-line" onclick="shareLINE()">LINEでシェア</button>
           <button class="share-btn share-copy" onclick="copyLink()">URLコピー</button>
         </div>
-        <button class="btn" style="margin-top:16px" onclick="gameStart()">もう一回</button>
+        <button class="btn-retry" onclick="gameStart()">&#128260; もう一回</button>
       </div>
     </div>
-  </div>
-
-  <script>
+  </div>  <script>
     var GAME_NAME = 'classic-quiz';
-    var SHARE_TEXT = 'クラシック検定で{rank}ランク取得！ #VeliqGames #VariOrchestra';
     var AD_CLIENT = 'ca-pub-XXXXXXXXXXXXXXXX';
     var playCount = 0;
 
     var questions = [
-      // 初級 (1-8)
-      {q:'交響曲第5番「運命」',a:'ベートーヴェン',c:['モーツァルト','バッハ','ハイドン'],d:'初級'},
-      {q:'四季より「春」',a:'ヴィヴァルディ',c:['バッハ','ヘンデル','テレマン'],d:'初級'},
-      {q:'トルコ行進曲',a:'モーツァルト',c:['ベートーヴェン','シューベルト','ハイドン'],d:'初級'},
-      {q:'白鳥の湖',a:'チャイコフスキー',c:['プロコフィエフ','ストラヴィンスキー','ラフマニノフ'],d:'初級'},
-      {q:'ボレロ',a:'ラヴェル',c:['ドビュッシー','サティ','フォーレ'],d:'初級'},
-      {q:'エリーゼのために',a:'ベートーヴェン',c:['ショパン','リスト','シューマン'],d:'初級'},
-      {q:'カノン',a:'パッヘルベル',c:['バッハ','ヘンデル','テレマン'],d:'初級'},
-      {q:'アイネ・クライネ・ナハトムジーク',a:'モーツァルト',c:['ハイドン','ベートーヴェン','シューベルト'],d:'初級'},
-      // 中級 (9-14)
-      {q:'交響曲第9番「新世界より」',a:'ドヴォルザーク',c:['ブラームス','チャイコフスキー','マーラー'],d:'中級'},
-      {q:'ラプソディ・イン・ブルー',a:'ガーシュウィン',c:['バーンスタイン','コープランド','エリントン'],d:'中級'},
-      {q:'惑星より「木星」',a:'ホルスト',c:['エルガー','ブリテン','ヴォーン・ウィリアムズ'],d:'中級'},
-      {q:'展覧会の絵',a:'ムソルグスキー',c:['リムスキー＝コルサコフ','ボロディン','グリンカ'],d:'中級'},
-      {q:'交響詩「魔法使いの弟子」',a:'デュカス',c:['サン＝サーンス','フランク','マスネ'],d:'中級'},
-      {q:'ピアノ協奏曲第2番',a:'ラフマニノフ',c:['チャイコフスキー','スクリャービン','プロコフィエフ'],d:'中級'},
-      // 上級 (15-20)
-      {q:'交響曲第8番「千人の交響曲」',a:'マーラー',c:['ブルックナー','リヒャルト・シュトラウス','ショスタコーヴィチ'],d:'上級'},
-      {q:'牧神の午後への前奏曲',a:'ドビュッシー',c:['ラヴェル','フォーレ','サティ'],d:'上級'},
-      {q:'春の祭典',a:'ストラヴィンスキー',c:['バルトーク','プロコフィエフ','ショスタコーヴィチ'],d:'上級'},
-      {q:'ヴォツェック',a:'ベルク',c:['シェーンベルク','ウェーベルン','ヒンデミット'],d:'上級'},
-      {q:'トゥーランガリラ交響曲',a:'メシアン',c:['ブーレーズ','デュティユー','プーランク'],d:'上級'},
-      {q:'交響曲第4番',a:'ブラームス',c:['ブルックナー','マーラー','シューマン'],d:'上級'}
+      {q:'交響曲第5番 ハ短調「運命」',a:'ベートーヴェン',c:['モーツァルト','バッハ','ハイドン'],d:'初級'},
+      {q:'歌劇「魔笛」',a:'モーツァルト',c:['ヴェルディ','ワーグナー','ロッシーニ'],d:'初級'},
+      {q:'「四季」より「春」',a:'ヴィヴァルディ',c:['バッハ','テレマン','ヘンデル'],d:'初級'},
+      {q:'バレエ音楽「白鳥の湖」',a:'チャイコフスキー',c:['プロコフィエフ','ストラヴィンスキー','ラヴェル'],d:'初級'},
+      {q:'ピアノ曲「エリーゼのために」',a:'ベートーヴェン',c:['ショパン','リスト','シューマン'],d:'初級'},
+      {q:'管弦楽曲「ボレロ」',a:'ラヴェル',c:['ドビュッシー','サティ','ビゼー'],d:'初級'},
+      {q:'「カノン ニ長調」',a:'パッヘルベル',c:['バッハ','ヴィヴァルディ','テレマン'],d:'初級'},
+      {q:'交響曲第9番 ホ短調「新世界より」',a:'ドヴォルザーク',c:['ブラームス','チャイコフスキー','マーラー'],d:'中級'},
+      {q:'組曲「惑星」より「木星」',a:'ホルスト',c:['エルガー','ブリテン','ヴォーン・ウィリアムズ'],d:'中級'},
+      {q:'交響詩「ツァラトゥストラはかく語りき」',a:'リヒャルト・シュトラウス',c:['ワーグナー','マーラー','ブルックナー'],d:'中級'},
+      {q:'組曲「展覧会の絵」',a:'ムソルグスキー',c:['リムスキー＝コルサコフ','ボロディン','チャイコフスキー'],d:'中級'},
+      {q:'オペラ「カルメン」',a:'ビゼー',c:['ヴェルディ','プッチーニ','ロッシーニ'],d:'中級'},
+      {q:'「ラプソディ・イン・ブルー」',a:'ガーシュウィン',c:['バーンスタイン','コープランド','エリントン'],d:'中級'},
+      {q:'ピアノ曲集「子供の情景」より「トロイメライ」',a:'シューマン',c:['ショパン','リスト','ブラームス'],d:'中級'},
+      {q:'バレエ音楽「春の祭典」',a:'ストラヴィンスキー',c:['バルトーク','プロコフィエフ','ショスタコーヴィチ'],d:'上級'},
+      {q:'「牧神の午後への前奏曲」',a:'ドビュッシー',c:['ラヴェル','フォーレ','サティ'],d:'上級'},
+      {q:'交響曲第8番 変ホ長調「千人の交響曲」',a:'マーラー',c:['ブルックナー','リヒャルト・シュトラウス','ショスタコーヴィチ'],d:'上級'},
+      {q:'オペラ「ヴォツェック」',a:'ベルク',c:['シェーンベルク','ウェーベルン','ヒンデミット'],d:'上級'},
+      {q:'「トゥーランガリラ交響曲」',a:'メシアン',c:['ブーレーズ','デュティユー','プーランク'],d:'上級'},
+      {q:'交響曲第3番 変ホ長調「英雄」',a:'ベートーヴェン',c:['ブラームス','ブルックナー','シューマン'],d:'上級'}
     ];
 
-    var score = 0;
-    var currentQ = 0;
-    var answered = false;
-    var rank = '';
+    var score=0, currentQ=0, answered=false, streak=0, rank='';
+    var timerInterval=null, timerSeconds=15;
+    var beginnerCorrect=0, beginnerTotal=7;
+    var intermediateCorrect=0, intermediateTotal=7;
+    var advancedCorrect=0, advancedTotal=6;
+    var audioCtx=null;
+    var tickTimeout=null;
 
-    // === SOUND EFFECTS ===
-    var audioCtx = null;
     function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)()}
-    function playSound(freq,dur,type){try{initAudio();var o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(0.3,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}catch(e){}}
-    function playCorrect(){playSound(523,0.1,'sine');setTimeout(function(){playSound(659,0.1,'sine')},100);setTimeout(function(){playSound(784,0.15,'sine')},200)}
-    function playWrong(){playSound(200,0.3,'sawtooth')}
+
+    function playTone(freq,dur,type,vol){
+      try{
+        initAudio();
+        var o=audioCtx.createOscillator(),g=audioCtx.createGain();
+        o.type=type||'sine';o.frequency.value=freq;
+        g.gain.setValueAtTime(vol||0.25,audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur);
+        o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur);
+      }catch(e){}
+    }
+
+    function playCorrect(){
+      playTone(523.25,0.12,'sine',0.3);
+      setTimeout(function(){playTone(659.25,0.12,'sine',0.3)},100);
+      setTimeout(function(){playTone(783.99,0.2,'sine',0.3)},200);
+    }
+    function playWrong(){playTone(185,0.35,'sawtooth',0.2);playTone(175,0.35,'square',0.1)}
+    function playTick(){playTone(800,0.05,'square',0.15)}
+    function playFanfare(){
+      var notes=[523.25,659.25,783.99,1046.50];
+      for(var i=0;i<notes.length;i++){
+        (function(n,d){setTimeout(function(){playTone(n,0.3,'sine',0.25)},d)})(notes[i],i*150);
+      }
+    }
     function vibrate(ms){if(navigator.vibrate)navigator.vibrate(ms)}
 
-    function shuffle(arr) {
-      for (var i = arr.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    function shuffle(arr){
+      var a=arr.slice();
+      for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+      return a;
+    }
+
+    function showScreen(id){
+      document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+      document.getElementById('screen-'+id).classList.add('active');
+    }
+
+    function updateProgress(){
+      var pct=(currentQ/questions.length)*100;
+      document.getElementById('progress-bar').style.width=pct+'%';
+    }
+
+    function updateScoreDisplay(pts){
+      var el=document.getElementById('score-display');
+      var floater=document.getElementById('score-float');
+      el.style.animation='none';el.offsetHeight;
+      el.childNodes[0].textContent=score;
+      el.style.animation='count-pop 0.3s';
+      if(pts>0){
+        floater.textContent='+'+pts;
+        floater.style.animation='none';floater.offsetHeight;
+        floater.style.animation='float-up 1s forwards';
       }
-      return arr;
     }
 
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(function(s){s.classList.add('hidden')});
-      document.getElementById('screen-'+id).classList.remove('hidden');
+    function updateStreak(){
+      var bar=document.getElementById('streak-bar');
+      if(streak>=2){
+        var fires='';for(var i=0;i<Math.min(streak,10);i++)fires+='\uD83D\uDD25';
+        var mult=streak>=5?' x2.0':streak>=3?' x1.5':'';
+        bar.innerHTML=fires+' '+streak+'連続正解！'+mult;
+        bar.classList.add('visible');
+      }else{
+        bar.classList.remove('visible');
+      }
     }
 
-    function gameStart() {
-      score = 0; currentQ = 0; answered = false;
-      document.getElementById('score-display').textContent = 'SCORE: 0 / Q1';
+    function getStreakMultiplier(){
+      if(streak>=5)return 2.0;
+      if(streak>=3)return 1.5;
+      return 1.0;
+    }
+
+    function getDiffClass(d){
+      if(d==='初級')return 'diff-beginner';
+      if(d==='中級')return 'diff-intermediate';
+      return 'diff-advanced';
+    }
+
+    function buildQuizCard(idx){
+      var q=questions[idx];
+      var choices=shuffle([q.a].concat(q.c));
+      var labels=['A','B','C','D'];
+      var circumference=2*Math.PI*24;
+
+      var html='<div class="quiz-card" id="card-'+idx+'">';
+      html+='<div class="quiz-top">';
+      html+='<span class="q-num">Q'+(idx+1)+' / '+questions.length+'</span>';
+      html+='<span class="diff-badge '+getDiffClass(q.d)+'">'+q.d+'</span>';
+      html+='</div>';
+
+      html+='<div class="timer-container">';
+      html+='<div class="timer-ring">';
+      html+='<svg viewBox="0 0 56 56"><circle class="timer-bg" cx="28" cy="28" r="24"/>';
+      html+='<circle class="timer-fg" id="timer-fg-'+idx+'" cx="28" cy="28" r="24" stroke-dasharray="'+circumference+'" stroke-dashoffset="0"/></svg>';
+      html+='<div class="timer-text" id="timer-text-'+idx+'">15</div>';
+      html+='</div></div>';
+
+      html+='<div class="q-text">\u266A '+q.q+'</div>';
+
+      html+='<div class="choices-area">';
+      for(var i=0;i<choices.length;i++){
+        html+='<button class="choice-btn" data-answer="'+choices[i].replace(/"/g,'&quot;')+'" onclick="answer(this)">';
+        html+='<span class="choice-label">'+labels[i]+'</span>';
+        html+='<span>'+choices[i]+'</span>';
+        html+='</button>';
+      }
+      html+='</div></div>';
+      return html;
+    }
+
+    function gameStart(){
+      score=0;currentQ=0;answered=false;streak=0;
+      beginnerCorrect=0;intermediateCorrect=0;advancedCorrect=0;
+      clearInterval(timerInterval);clearTimeout(tickTimeout);
+      document.getElementById('score-display').childNodes[0].textContent='0';
+      document.getElementById('streak-bar').classList.remove('visible');
+      updateProgress();
+      document.getElementById('quiz-slide-container').innerHTML='';
       showScreen('play');
-      if(typeof gtag==='function') gtag('event','game_start',{game_name:GAME_NAME});
+      if(typeof gtag==='function')gtag('event','game_start',{game_name:GAME_NAME});
       showQuestion();
     }
 
-    function showQuestion() {
-      if (currentQ >= questions.length) { gameComplete(); return; }
-      answered = false;
-      var q = questions[currentQ];
-      document.getElementById('question-num').textContent = 'Q' + (currentQ+1) + ' / ' + questions.length;
-      var badge = document.getElementById('difficulty-badge');
-      badge.textContent = q.d;
-      badge.className = q.d === '初級' ? 'diff-easy' : q.d === '中級' ? 'diff-medium' : 'diff-hard';
-      document.getElementById('question-text').textContent = '♪「' + q.q + '」';
-      document.getElementById('feedback').textContent = '';
-      document.getElementById('score-display').textContent = 'SCORE: ' + score + ' / Q' + (currentQ+1);
+    function showQuestion(){
+      if(currentQ>=questions.length){gameComplete();return;}
+      answered=false;
+      updateProgress();
+      var container=document.getElementById('quiz-slide-container');
 
-      var choices = shuffle([q.a].concat(q.c));
-      var html = '';
-      for (var i = 0; i < choices.length; i++) {
-        html += '<button class="choice-btn" onclick="answer(this,\'' + choices[i].replace(/'/g, "\\'") + '\')">' + choices[i] + '</button>';
+      var prev=container.querySelector('.quiz-card.current');
+      container.innerHTML+=buildQuizCard(currentQ);
+      var card=document.getElementById('card-'+currentQ);
+
+      if(prev){
+        prev.classList.remove('current');
+        prev.classList.add('slide-out');
+        card.offsetHeight;
+        card.classList.add('slide-in');
+        card.classList.add('current');
+        setTimeout(function(){if(prev&&prev.parentNode)prev.parentNode.removeChild(prev)},400);
+      }else{
+        card.classList.add('current');
       }
-      document.getElementById('choices').innerHTML = html;
+
+      startTimer(currentQ);
     }
 
-    function answer(btn, choice) {
-      if (answered) return;
-      answered = true;
-      var q = questions[currentQ];
-      var btns = document.querySelectorAll('.choice-btn');
+    function startTimer(qIdx){
+      timerSeconds=15;
+      var circumference=2*Math.PI*24;
+      var fg=document.getElementById('timer-fg-'+qIdx);
+      var txt=document.getElementById('timer-text-'+qIdx);
+      if(!fg||!txt)return;
 
-      if (choice === q.a) {
+      clearInterval(timerInterval);clearTimeout(tickTimeout);
+      fg.style.strokeDashoffset='0';
+      fg.classList.remove('warn');
+      txt.classList.remove('warn');
+
+      timerInterval=setInterval(function(){
+        timerSeconds--;
+        if(!document.getElementById('timer-text-'+qIdx))return clearInterval(timerInterval);
+        var el=document.getElementById('timer-text-'+qIdx);
+        var fgEl=document.getElementById('timer-fg-'+qIdx);
+        if(!el||!fgEl){clearInterval(timerInterval);return;}
+
+        el.textContent=timerSeconds;
+        var offset=circumference*(1-timerSeconds/15);
+        fgEl.style.strokeDashoffset=offset;
+
+        if(timerSeconds<=5){
+          fgEl.classList.add('warn');
+          el.classList.add('warn');
+          playTick();
+        }
+
+        if(timerSeconds<=0){
+          clearInterval(timerInterval);
+          if(!answered)timeUp(qIdx);
+        }
+      },1000);
+    }
+
+    function timeUp(qIdx){
+      answered=true;streak=0;updateStreak();
+      var q=questions[currentQ];
+      var card=document.getElementById('card-'+qIdx);
+      if(!card)return;
+      var btns=card.querySelectorAll('.choice-btn');
+      btns.forEach(function(b){
+        b.classList.add('disabled');
+        if(b.getAttribute('data-answer')===q.a)b.classList.add('reveal');
+      });
+      playWrong();vibrate(100);
+      currentQ++;
+      setTimeout(showQuestion,1500);
+    }
+
+    function answer(btn){
+      if(answered)return;
+      answered=true;
+      clearInterval(timerInterval);
+
+      var choice=btn.getAttribute('data-answer');
+      var q=questions[currentQ];
+      var card=btn.closest('.quiz-card');
+      var btns=card.querySelectorAll('.choice-btn');
+      btns.forEach(function(b){b.classList.add('disabled')});
+
+      var timeLeft=timerSeconds;
+      var pts=0;
+
+      if(choice===q.a){
         btn.classList.add('correct');
-        score += 10;
-        document.getElementById('feedback').innerHTML = '<span style="color:#C9A84C">⭕ 正解！</span>';
-        playCorrect(); vibrate(50);
-      } else {
-        btn.classList.add('wrong');
-        document.getElementById('feedback').innerHTML = '<span style="color:#ff4444">❌ 不正解… 正解は ' + q.a + '</span>';
-        playWrong(); vibrate(100);
-        // Reveal correct
-        btns.forEach(function(b) {
-          if (b.textContent === q.a) b.classList.add('reveal');
-        });
-      }
+        btn.querySelector('.choice-label').textContent='\u2713';
+        streak++;
+        pts=10;
+        if(timeLeft>=10)pts+=5;
+        pts=Math.floor(pts*getStreakMultiplier());
+        score+=pts;
 
-      // Disable all buttons
-      btns.forEach(function(b) { b.style.pointerEvents = 'none'; });
+        if(q.d==='初級')beginnerCorrect++;
+        else if(q.d==='中級')intermediateCorrect++;
+        else advancedCorrect++;
+
+        updateScoreDisplay(pts);
+        updateStreak();
+        playCorrect();vibrate(50);
+
+        var floater=document.createElement('div');
+        floater.className='point-float';
+        floater.textContent='+'+pts;
+        card.appendChild(floater);
+        setTimeout(function(){if(floater.parentNode)floater.parentNode.removeChild(floater)},1000);
+      }else{
+        btn.classList.add('wrong');
+        btn.querySelector('.choice-label').textContent='\u2717';
+        streak=0;updateStreak();
+        btns.forEach(function(b){
+          if(b.getAttribute('data-answer')===q.a){b.classList.add('reveal');b.querySelector('.choice-label').textContent='\u2713';}
+        });
+        playWrong();vibrate(100);
+      }
 
       currentQ++;
-      setTimeout(showQuestion, 1500);
+      setTimeout(showQuestion,1500);
     }
 
-    function gameComplete() {
-      var pct = score / (questions.length * 10) * 100;
-      if (pct >= 90) rank = 'S';
-      else if (pct >= 70) rank = 'A';
-      else if (pct >= 50) rank = 'B';
-      else if (pct >= 30) rank = 'C';
-      else rank = 'D';
+    function gameComplete(){
+      clearInterval(timerInterval);
+      updateProgress();
+      document.getElementById('progress-bar').style.width='100%';
 
-      document.getElementById('rank-display').textContent = rank;
-      document.getElementById('clear-score').textContent = score + '/' + (questions.length * 10);
-      var msgs = {S:'すごい！クラシック博士！',A:'なかなかの知識！',B:'まずまず！',C:'もう少し勉強しよう',D:'クラシック初心者だね'};
-      document.getElementById('clear-message').textContent = msgs[rank];
+      if(score>=180)rank='S';
+      else if(score>=140)rank='A';
+      else if(score>=100)rank='B';
+      else if(score>=60)rank='C';
+      else rank='D';
 
-      if(typeof gtag==='function') gtag('event','game_clear',{game_name:GAME_NAME,score:score,rank:rank});
+      var rankEl=document.getElementById('result-rank');
+      rankEl.textContent=rank;
+      rankEl.className='result-rank rank-'+rank.toLowerCase();
 
-      showScreen('clear');
-      showAd('ad-clear');
+      document.getElementById('result-score').textContent=score+'点';
+
+      var msgs={S:'素晴らしい！クラシック博士！',A:'なかなかの博識！',B:'まずまずの腕前！',C:'もう少し勉強しよう！',D:'クラシックの世界へようこそ！'};
+      document.getElementById('result-msg').textContent=msgs[rank];
+
+      var bd=document.getElementById('result-breakdown');
+      var bPct=Math.round(beginnerCorrect/beginnerTotal*100);
+      var iPct=Math.round(intermediateCorrect/intermediateTotal*100);
+      var aPct=Math.round(advancedCorrect/advancedTotal*100);
+      bd.innerHTML='<h3>正答率</h3>'+
+        '<div class="breakdown-row"><span class="breakdown-label">初級（7問）</span><span class="breakdown-value '+(bPct>=70?'good':bPct>=40?'mid':'bad')+'">'+beginnerCorrect+'/'+beginnerTotal+' ('+bPct+'%)</span></div>'+
+        '<div class="breakdown-row"><span class="breakdown-label">中級（7問）</span><span class="breakdown-value '+(iPct>=70?'good':iPct>=40?'mid':'bad')+'">'+intermediateCorrect+'/'+intermediateTotal+' ('+iPct+'%)</span></div>'+
+        '<div class="breakdown-row"><span class="breakdown-label">上級（6問）</span><span class="breakdown-value '+(aPct>=70?'good':aPct>=40?'mid':'bad')+'">'+advancedCorrect+'/'+advancedTotal+' ('+aPct+'%)</span></div>';
+
+      if(typeof gtag==='function')gtag('event','game_clear',{game_name:GAME_NAME,score:score,rank:rank});
+
+      showScreen('result');
+      if(rank==='S'||rank==='A')playFanfare();
+      showAd('ad-result');
       showInterstitial();
+
+      // Animate score counting
+      var scoreEl=document.getElementById('result-score');
+      var counter=0;var target=score;
+      var step=Math.max(1,Math.floor(target/30));
+      var countInterval=setInterval(function(){
+        counter+=step;
+        if(counter>=target){counter=target;clearInterval(countInterval);}
+        scoreEl.textContent=counter+'点';
+      },30);
     }
 
-    function buildShareData() { return { rank: rank }; }
+    function getShareText(){
+      return '\u30AF\u30E9\u30B7\u30C3\u30AF\u691C\u5B9A\u3067'+rank+'\u30E9\u30F3\u30AF\uFF08'+score+'\u70B9\uFF09\u53D6\u5F97\uFF01 #VeliqGames #VariOrchestra';
+    }
 
-    // === COMMON FUNCTIONS ===
-    function showAd(containerId){var c=document.getElementById(containerId);if(!c)return;c.innerHTML='<ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>';try{(adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
-    function showInterstitial(){playCount++;if(playCount%5!==0)return;var o=document.createElement('div');o.id='veliq-interstitial';o.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center;';o.innerHTML='<div style="background:#111;border:1px solid #C9A84C;border-radius:12px;padding:24px;max-width:340px;width:90%;text-align:center;"><p style="color:#C9A84C;margin-bottom:16px;">広告</p><ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto"></ins><button onclick="document.getElementById(\'veliq-interstitial\').remove()" style="margin-top:16px;padding:10px 32px;background:#C9A84C;color:#000;border:none;border-radius:6px;font-size:16px;cursor:pointer;">閉じる</button></div>';document.body.appendChild(o);try{(adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
-    function getShareText(data){var t=SHARE_TEXT;for(var k in data){t=t.replace(new RegExp('\\{'+k+'\\}','g'),data[k])}return t}
-    function shareX(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'twitter'});window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(getShareText(buildShareData()))+'&url='+encodeURIComponent(location.href),'_blank','width=550,height=420')}
-    function shareLINE(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'line'});window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(getShareText(buildShareData())),'_blank')}
-    function copyLink(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'copy'});if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){alert('URLをコピーしました！')})}else{var t=document.createElement('textarea');t.value=location.href;t.style.cssText='position:fixed;opacity:0;';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);alert('URLをコピーしました！')}}
+    function shareX(){
+      if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'twitter'});
+      window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(getShareText())+'&url='+encodeURIComponent(location.href),'_blank','width=550,height=420');
+    }
+    function shareLINE(){
+      if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'line'});
+      window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(getShareText()),'_blank');
+    }
+    function copyLink(){
+      if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'copy'});
+      if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){alert('URL\u3092\u30B3\u30D4\u30FC\u3057\u307E\u3057\u305F\uFF01')})}
+      else{var t=document.createElement('textarea');t.value=location.href;t.style.cssText='position:fixed;opacity:0;';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);alert('URL\u3092\u30B3\u30D4\u30FC\u3057\u307E\u3057\u305F\uFF01')}
+    }
+
+    function showAd(containerId){
+      var c=document.getElementById(containerId);if(!c)return;
+      c.innerHTML='<ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>';
+      try{(adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}
+    }
+
+    function showInterstitial(){
+      playCount++;if(playCount%5!==0)return;
+      var o=document.createElement('div');o.id='veliq-interstitial';
+      o.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:10000;display:flex;align-items:center;justify-content:center;';
+      o.innerHTML='<div style="background:#111;border:1px solid #C9A84C;border-radius:12px;padding:24px;max-width:340px;width:90%;text-align:center;"><p style="color:#C9A84C;margin-bottom:16px;">広告</p><ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto"></ins><button onclick="document.getElementById(\'veliq-interstitial\').remove()" style="margin-top:16px;padding:10px 32px;background:linear-gradient(135deg,#C9A84C,#FFD700);color:#000;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;font-family:Noto Sans JP,sans-serif;">閉じる</button></div>';
+      document.body.appendChild(o);
+      try{(adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}
+    }
+
     if('serviceWorker' in navigator){navigator.serviceWorker.register('../../sw.js').catch(function(){})}
   </script>
 </body>
