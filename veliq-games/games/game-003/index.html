@@ -6,371 +6,352 @@
   <title>1万円を1億円にしろ！FXトレードゲーム | Veliq Games</title>
   <meta name="description" content="仮想FXトレードで1万円を増やせ！レバレッジ最大25倍、30ターンの勝負">
   <meta name="theme-color" content="#C9A84C">
-
   <meta property="og:title" content="1万円を1億円にしろ！FXトレードゲーム | Veliq Games">
   <meta property="og:description" content="仮想FXトレードで1万円を増やせ！レバレッジ最大25倍、30ターンの勝負">
-  <meta property="og:image" content="">
-  <meta property="og:url" content="">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "GameApplication",
-    "name": "1万円を1億円にしろ！FXトレードゲーム",
-    "description": "仮想FXトレードで1万円を増やせ！レバレッジ最大25倍、30ターンの勝負",
-    "applicationCategory": "Game",
-    "operatingSystem": "Web Browser",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
-    "author": { "@type": "Organization", "name": "Veliq Games" }
-  }
-  </script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta property="og:image" content=""><meta property="og:url" content=""><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"GameApplication","name":"FXトレードゲーム","description":"仮想FXで1万円を億にしろ","applicationCategory":"Game","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"author":{"@type":"Organization","name":"Veliq Games"}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="manifest" href="../../manifest.json">
-
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
-    gtag('js',new Date());gtag('config','G-XXXXXXXXXX');
-  </script>
-
-  <!-- Chart.js CDN -->
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     html,body{width:100%;height:100%;font-family:'Noto Sans JP',sans-serif;background:#000;color:#fff;overflow-x:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
     #app{width:100%;min-height:100%;max-width:480px;margin:0 auto;position:relative;display:flex;flex-direction:column}
-    #header{padding:12px 16px;text-align:center;border-bottom:1px solid #222;position:sticky;top:0;background:#000;z-index:5}
-    #game-title{font-size:18px;font-weight:900;color:#C9A84C}
-    #score-display{font-size:13px;color:#aaa;margin-top:4px}
-    #game-area{flex:1;position:relative;overflow-y:auto}
-    .screen{position:absolute;top:0;left:0;width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;transition:opacity 0.3s;z-index:10}
-    .screen.hidden{opacity:0;pointer-events:none;z-index:0}
-    .screen h2{font-size:24px;font-weight:900;color:#C9A84C;margin-bottom:16px}
-    .screen p{color:#ccc;margin-bottom:12px;line-height:1.6}
-    .btn{display:inline-block;padding:14px 40px;background:#C9A84C;color:#000;font-size:18px;font-weight:700;border:none;border-radius:8px;cursor:pointer;margin:8px;font-family:'Noto Sans JP',sans-serif;transition:transform 0.1s}
-    .btn:active{transform:scale(0.95)}
+    #header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a1a1a;background:#000;position:sticky;top:0;z-index:100}
+    #game-title{font-size:14px;font-weight:900;color:#C9A84C}
+    #asset-header{text-align:right}
+    #asset-val{font-size:18px;font-weight:900;transition:color 0.3s}
+    #turn-header{font-size:11px;color:#666;margin-top:2px}
+    #progress-wrap{height:3px;background:#111;position:relative}
+    #progress-fill{height:100%;background:linear-gradient(90deg,#C9A84C,#e6c65a);transition:width 0.3s;box-shadow:0 0 6px rgba(201,168,76,0.4)}
+    #game-area{flex:1;position:relative;overflow-y:auto;padding-bottom:100px}
+    .screen{position:absolute;top:0;left:0;width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;z-index:200;background:#000;transition:opacity 0.4s}
+    .screen.hidden{opacity:0;pointer-events:none;z-index:-1}
+    .screen h2{font-size:24px;font-weight:900;color:#C9A84C;margin-bottom:12px}
+    .screen p{color:#999;font-size:14px;margin-bottom:8px;line-height:1.6}
+    .btn{display:inline-block;padding:14px 44px;background:#C9A84C;color:#000;font-size:18px;font-weight:900;border:none;border-radius:12px;cursor:pointer;margin:8px;font-family:'Noto Sans JP',sans-serif;transition:transform 0.15s;box-shadow:0 4px 20px rgba(201,168,76,0.3)}
+    .btn:active{transform:scale(0.93)}
+    .gold{color:#C9A84C}.green{color:#00E676}.red{color:#FF5252}
     .share-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-    .share-btn{padding:10px 16px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif}
-    .share-x{background:#000;color:#fff;border:1px solid #555}
+    .share-btn{padding:12px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif}
+    .share-btn:active{transform:scale(0.93)}
+    .share-x{background:#1a1a1a;color:#fff;border:1px solid #333}
     .share-line{background:#06C755;color:#fff}
-    .share-copy{background:#333;color:#fff}
-    .ad-container{width:100%;min-height:50px;margin:12px 0;text-align:center}
-    .gold{color:#C9A84C}.big{font-size:36px;font-weight:900}.red{color:#ff4444}.green{color:#44ff44}
-
-    /* FX styles */
-    #trade-panel{width:100%;padding:16px}
-    #chart-container{width:100%;height:200px;background:#0a0a0a;border-radius:8px;margin-bottom:16px;position:relative}
-    #chart-container canvas{width:100%!important;height:100%!important}
-    #asset-display{font-size:28px;font-weight:900;margin:8px 0}
-    #turn-display{font-size:14px;color:#aaa;margin-bottom:12px}
-    #rate-display{font-size:16px;color:#ccc;margin-bottom:16px}
-    .lev-bar{display:flex;gap:6px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
-    .lev-btn{padding:8px 14px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:2px solid #333;background:#111;color:#aaa;font-family:'Noto Sans JP',sans-serif;transition:border-color 0.2s}
-    .lev-btn.active{border-color:#C9A84C;color:#C9A84C}
-    .action-bar{display:flex;gap:8px;justify-content:center}
-    .action-btn{flex:1;padding:14px;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif}
-    .buy-btn{background:#1a472a;color:#44ff44}
-    .sell-btn{background:#472a1a;color:#ff4444}
-    .hold-btn{background:#222;color:#aaa}
-    .action-btn:active{transform:scale(0.96)}
-    #trade-result{font-size:16px;font-weight:700;margin-top:12px;min-height:24px}
-    #highscore-display{color:#aaa;font-size:14px;margin-top:8px}
+    .share-copy{background:#222;color:#ccc}
+    .ad-container{width:100%;min-height:50px;margin:12px 0}
+    /* Chart */
+    #chart-wrap{width:100%;padding:12px;background:#050505;border-bottom:1px solid #111}
+    #chart-wrap canvas{width:100%!important;height:180px!important}
+    /* News ticker */
+    #news-bar{padding:10px 16px;background:#0a0a0a;border-bottom:1px solid #111;font-size:13px;min-height:44px;display:flex;align-items:center;gap:8px}
+    #news-icon{font-size:16px}
+    #news-text{color:#ccc;flex:1;line-height:1.4}
+    .news-bullish{color:#00E676!important}
+    .news-bearish{color:#FF5252!important}
+    .news-neutral{color:#888!important}
+    /* Trade panel */
+    #trade-panel{padding:16px}
+    #rate-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    #rate-val{font-size:22px;font-weight:900}
+    #rate-change{font-size:13px;font-weight:700}
+    #asset-big{font-size:32px;font-weight:900;text-align:center;margin:8px 0;transition:color 0.3s}
+    #trade-result{text-align:center;font-size:15px;font-weight:700;min-height:24px;margin:8px 0}
+    .lev-row{display:flex;gap:6px;justify-content:center;margin:12px 0}
+    .lev-btn{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:2px solid #222;background:#0a0a0a;color:#666;font-family:'Noto Sans JP',sans-serif;transition:all 0.2s}
+    .lev-btn.active{border-color:#C9A84C;color:#C9A84C;background:#1a1505;box-shadow:0 0 10px rgba(201,168,76,0.2)}
+    .action-row{display:flex;gap:8px;margin-top:12px}
+    .act-btn{flex:1;padding:16px;border-radius:10px;font-size:16px;font-weight:900;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif;transition:transform 0.1s,box-shadow 0.2s}
+    .act-btn:active{transform:scale(0.95)}
+    .buy-btn{background:linear-gradient(135deg,#1a3a2a,#0a2a1a);color:#00E676;border:1px solid #00E67633}
+    .sell-btn{background:linear-gradient(135deg,#3a1a1a,#2a0a0a);color:#FF5252;border:1px solid #FF525233}
+    .hold-btn{background:#111;color:#888;border:1px solid #222}
+    .buy-btn:active{box-shadow:0 0 20px rgba(0,230,118,0.2)}
+    .sell-btn:active{box-shadow:0 0 20px rgba(255,82,82,0.2)}
+    /* Float number */
+    .float-num{position:fixed;font-weight:900;font-size:18px;pointer-events:none;z-index:500;animation:floatUp 1s ease-out forwards}
+    @keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+    /* Sparkline */
+    #sparkline-wrap{padding:8px 16px;display:flex;align-items:center;gap:8px}
+    #sparkline-label{font-size:10px;color:#555;white-space:nowrap}
+    #sparkline{flex:1;height:30px}
+    /* Result stats */
+    .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;width:100%;max-width:320px;margin:12px auto}
+    .stat-item{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:8px;padding:10px;text-align:center}
+    .stat-label{font-size:10px;color:#555;margin-bottom:4px}
+    .stat-val{font-size:16px;font-weight:900}
+    #result-rank-badge{font-size:14px;font-weight:900;padding:6px 16px;border-radius:20px;display:inline-block;margin:8px 0}
+    #hs-display{color:#555;font-size:12px;margin-top:4px}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
   </style>
 </head>
 <body>
   <div id="app">
     <div id="header">
-      <div id="game-title">💹 FXトレードゲーム</div>
-      <div id="score-display">資産: ¥10,000 | ターン: 1/30</div>
+      <div id="game-title">💹 FXトレード</div>
+      <div id="asset-header"><div id="asset-val" class="gold">¥10,000</div><div id="turn-header">ターン 1/30</div></div>
     </div>
+    <div id="progress-wrap"><div id="progress-fill" style="width:0%"></div></div>
 
     <div id="game-area">
-      <!-- Start Screen -->
+      <!-- Start -->
       <div id="screen-start" class="screen">
         <h2>💹 1万円を1億円にしろ！</h2>
-        <p>ランダムな為替チャートで売買判断！<br>レバレッジを選んで30ターン勝負！</p>
-        <p style="font-size:13px;color:#666">※ 仮想通貨ペア VLQ/JPY</p>
+        <p>仮想通貨ペア VLQ/JPY のチャートを見て<br>「買い」「売り」「様子見」を判断！</p>
+        <p style="font-size:12px;color:#666">レバレッジ最大25倍 × 30ターン<br>ニュースも参考にしろ（嘘ニュース注意）</p>
         <button class="btn" onclick="gameStart()">トレード開始</button>
-        <div id="highscore-display"></div>
+        <div id="hs-start" style="color:#555;font-size:12px;margin-top:8px"></div>
       </div>
 
-      <!-- Play Screen -->
-      <div id="screen-play" class="screen hidden">
+      <!-- Play -->
+      <div id="screen-play" class="screen hidden" style="justify-content:flex-start;padding:0">
+        <div id="chart-wrap"><canvas id="fx-chart"></canvas></div>
+        <div id="news-bar"><span id="news-icon">📰</span><span id="news-text">ニュースを待っています…</span></div>
+        <div id="sparkline-wrap"><span id="sparkline-label">資産推移</span><canvas id="sparkline" height="30"></canvas></div>
         <div id="trade-panel">
-          <div id="chart-container"><canvas id="fx-chart"></canvas></div>
-          <div id="rate-display"></div>
-          <div id="asset-display" class="gold">¥10,000</div>
-          <div id="turn-display">ターン 1 / 30</div>
+          <div id="rate-row"><div id="rate-val" class="gold">100.00</div><div id="rate-change"></div></div>
+          <div id="asset-big" class="gold">¥10,000</div>
           <div id="trade-result"></div>
-
-          <div class="lev-bar">
+          <div class="lev-row">
             <button class="lev-btn active" onclick="setLev(1)">×1</button>
             <button class="lev-btn" onclick="setLev(5)">×5</button>
             <button class="lev-btn" onclick="setLev(10)">×10</button>
             <button class="lev-btn" onclick="setLev(25)">×25</button>
           </div>
-
-          <div class="action-bar">
-            <button class="action-btn buy-btn" onclick="trade('buy')">買い</button>
-            <button class="action-btn hold-btn" onclick="trade('hold')">様子見</button>
-            <button class="action-btn sell-btn" onclick="trade('sell')">売り</button>
+          <div class="action-row">
+            <button class="act-btn buy-btn" onclick="trade('buy')">📈 買い</button>
+            <button class="act-btn hold-btn" onclick="trade('hold')">⏸ 様子見</button>
+            <button class="act-btn sell-btn" onclick="trade('sell')">📉 売り</button>
           </div>
         </div>
       </div>
 
-      <!-- Result Screen -->
-      <div id="screen-gameover" class="screen hidden">
+      <!-- Result -->
+      <div id="screen-result" class="screen hidden">
         <h2>トレード結果</h2>
-        <p id="result-message"></p>
+        <div id="result-rank-badge"></div>
         <p>最終資産</p>
-        <p id="gameover-score" class="big"></p>
+        <p id="result-asset" style="font-size:36px;font-weight:900"></p>
         <p id="result-pnl"></p>
-        <div class="ad-container" id="ad-gameover"></div>
+        <div class="stat-grid">
+          <div class="stat-item"><div class="stat-label">勝率</div><div class="stat-val" id="s-winrate">-</div></div>
+          <div class="stat-item"><div class="stat-label">最大利益</div><div class="stat-val green" id="s-best">-</div></div>
+          <div class="stat-item"><div class="stat-label">最大損失</div><div class="stat-val red" id="s-worst">-</div></div>
+        </div>
+        <div class="ad-container" id="ad-result"></div>
         <div class="share-bar">
           <button class="share-btn share-x" onclick="shareX()">Xでシェア</button>
           <button class="share-btn share-line" onclick="shareLINE()">LINEでシェア</button>
           <button class="share-btn share-copy" onclick="copyLink()">URLコピー</button>
         </div>
-        <button class="btn" style="margin-top:16px" onclick="gameStart()">もう一回</button>
+        <button class="btn" style="margin-top:12px" onclick="gameStart()">もう一回</button>
+        <div id="hs-display"></div>
       </div>
     </div>
   </div>
 
   <script>
-    var GAME_NAME = 'fx-trade';
-    var SHARE_TEXT = 'FXゲームで{asset}円達成！ #VeliqGames';
-    var AD_CLIENT = 'ca-pub-XXXXXXXXXXXXXXXX';
-    var playCount = 0;
+    var GAME_NAME='fx-trade',SHARE_TEXT='FXゲームで¥{asset}達成！（{rank}） #VeliqGames',AD_CLIENT='ca-pub-XXXXXXXXXXXXXXXX',playCount=0;
+    var asset=10000,turn=0,maxTurns=30,leverage=1,rates=[],chart=null,sparkChart=null,currentRate=100,trading=false;
+    var assetHistory=[],tradeResults=[],bestTrade=-Infinity,worstTrade=Infinity,wins=0,losses=0;
+    var trend=0,momentum=0;
 
-    var asset = 10000;
-    var turn = 0;
-    var maxTurns = 30;
-    var leverage = 1;
-    var rates = [];
-    var chart = null;
-    var currentRate = 100;
-    var trading = false;
+    // News system
+    var newsPool=[
+      {text:'日銀が利上げを示唆、市場に緊張走る',dir:-1,icon:'🏦',cls:'news-bearish'},
+      {text:'米雇用統計が予想を大幅に上回る',dir:1,icon:'📊',cls:'news-bullish'},
+      {text:'大手ファンドがVLQを大量購入との情報',dir:1,icon:'🐋',cls:'news-bullish'},
+      {text:'規制強化の懸念が市場に広がる',dir:-1,icon:'⚠️',cls:'news-bearish'},
+      {text:'テクニカル指標がゴールデンクロスを形成',dir:1,icon:'📈',cls:'news-bullish'},
+      {text:'著名アナリスト「VLQは割高」と警告',dir:-1,icon:'💬',cls:'news-bearish'},
+      {text:'新興国の需要増で取引量急増',dir:1,icon:'🌏',cls:'news-bullish'},
+      {text:'大口の利確売りが観測される',dir:-1,icon:'📉',cls:'news-bearish'},
+      {text:'市場は方向感なく推移',dir:0,icon:'😐',cls:'news-neutral'},
+      {text:'週末を前にポジション調整の動き',dir:0,icon:'📅',cls:'news-neutral'},
+      {text:'速報：主要取引所でシステム障害発生',dir:-1,icon:'🚨',cls:'news-bearish'},
+      {text:'機関投資家の買い注文が増加傾向',dir:1,icon:'💰',cls:'news-bullish'},
+      {text:'政府が暗号資産推進政策を発表',dir:1,icon:'🏛️',cls:'news-bullish'},
+      {text:'ハッキング被害のニュースで市場動揺',dir:-1,icon:'🔓',cls:'news-bearish'},
+    ];
 
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(function(s){s.classList.add('hidden')});
-      document.getElementById('screen-'+id).classList.remove('hidden');
+    function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.add('hidden')});var e=document.getElementById('screen-'+id);if(e)e.classList.remove('hidden')}
+    function fmtYen(n){return'¥'+Math.floor(Math.max(0,n)).toLocaleString()}
+
+    function generateRate(prev){
+      // Trend + momentum + noise + mean reversion
+      momentum=momentum*0.7+(Math.random()-0.5)*0.02;
+      trend=trend*0.9+(Math.random()-0.5)*0.01;
+      var revert=(100-prev)*0.003;
+      var noise=(Math.random()-0.5)*prev*0.04;
+      var newsInfluence=0;
+      // Apply current news direction with some probability
+      if(currentNews&&Math.random()<0.6){newsInfluence=currentNews.dir*prev*0.01*(0.5+Math.random());}
+      return Math.max(prev*0.5,Math.min(prev*2,prev+revert+noise+trend*prev+momentum*prev+newsInfluence));
     }
 
-    function formatYen(n) {
-      if (n < 0) n = 0;
-      return '¥' + Math.floor(n).toLocaleString();
+    var currentNews=null;
+    function showNews(){
+      var n=newsPool[Math.floor(Math.random()*newsPool.length)];
+      // 20% chance news is misleading
+      if(Math.random()<0.2){n={text:n.text+' ※未確認情報',dir:-n.dir,icon:'❓',cls:'news-neutral'};}
+      currentNews=n;
+      document.getElementById('news-icon').textContent=n.icon;
+      var ntEl=document.getElementById('news-text');
+      ntEl.textContent=n.text;ntEl.className=n.cls;
     }
 
-    function generateRate(prev) {
-      // Random walk with slight mean reversion and momentum
-      var volatility = 0.02 + Math.random() * 0.03;
-      var drift = (100 - prev) * 0.005; // mean reversion
-      var shock = (Math.random() - 0.5) * 2 * volatility * prev;
-      var trend = (Math.random() > 0.5 ? 1 : -1) * prev * 0.005;
-      return Math.max(prev * 0.7, Math.min(prev * 1.5, prev + drift + shock + trend));
-    }
-
-    function initChart() {
-      // Generate initial price history
-      rates = [100];
-      currentRate = 100;
-      for (var i = 1; i < 10; i++) {
-        currentRate = generateRate(currentRate);
-        rates.push(parseFloat(currentRate.toFixed(2)));
-      }
-      currentRate = rates[rates.length - 1];
-
-      var ctx = document.getElementById('fx-chart').getContext('2d');
-      if (chart) chart.destroy();
-
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: rates.map(function(_, i) { return ''; }),
-          datasets: [{
-            data: rates,
-            borderColor: '#C9A84C',
-            borderWidth: 2,
-            pointRadius: 0,
-            fill: {
-              target: 'origin',
-              above: 'rgba(201,168,76,0.1)'
-            },
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: { duration: 300 },
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { display: false },
-            y: {
-              display: true,
-              grid: { color: '#1a1a1a' },
-              ticks: { color: '#555', font: { size: 10 } }
-            }
-          }
-        }
+    function initChart(){
+      rates=[100];currentRate=100;trend=0;momentum=0;
+      for(var i=1;i<10;i++){currentRate=generateRate(currentRate);rates.push(parseFloat(currentRate.toFixed(2)));}
+      currentRate=rates[rates.length-1];
+      var ctx=document.getElementById('fx-chart').getContext('2d');
+      if(chart)chart.destroy();
+      chart=new Chart(ctx,{
+        type:'line',
+        data:{labels:rates.map(function(){return''}),datasets:[{data:rates,borderColor:'#C9A84C',borderWidth:2,pointRadius:0,pointHoverRadius:0,fill:{target:'origin',above:'rgba(201,168,76,0.08)'},tension:0.4}]},
+        options:{responsive:true,maintainAspectRatio:false,animation:{duration:400},plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:true,grid:{color:'#111'},ticks:{color:'#444',font:{size:9}}}}}
       });
     }
 
-    // === SOUND EFFECTS ===
+    function updateSparkline(){
+      var c=document.getElementById('sparkline');
+      var ctx=c.getContext('2d');
+      c.width=c.offsetWidth*2;c.height=60;
+      ctx.clearRect(0,0,c.width,c.height);
+      if(assetHistory.length<2)return;
+      var min=Math.min.apply(null,assetHistory),max=Math.max.apply(null,assetHistory);
+      var range=max-min||1;
+      ctx.beginPath();ctx.strokeStyle='#C9A84C';ctx.lineWidth=1.5;
+      for(var i=0;i<assetHistory.length;i++){
+        var x=i/(assetHistory.length-1)*c.width;
+        var y=c.height-(assetHistory[i]-min)/range*c.height*0.8-c.height*0.1;
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+
+    function updateUI(){
+      var color=asset>=10000?'#C9A84C':asset>5000?'#FF9800':'#FF5252';
+      document.getElementById('asset-val').style.color=color;
+      document.getElementById('asset-val').textContent=fmtYen(asset);
+      document.getElementById('asset-big').style.color=color;
+      document.getElementById('asset-big').textContent=fmtYen(asset);
+      document.getElementById('turn-header').textContent='ターン '+(turn+1)+'/'+maxTurns;
+      document.getElementById('progress-fill').style.width=(turn/maxTurns*100)+'%';
+      document.getElementById('rate-val').textContent=currentRate.toFixed(2);
+    }
+
+    function setLev(l){leverage=l;document.querySelectorAll('.lev-btn').forEach(function(b){b.classList.toggle('active',b.textContent==='×'+l)})}
+
+    function floatPnl(amount){
+      var el=document.createElement('div');el.className='float-num';
+      el.style.left='50%';el.style.top='40%';el.style.transform='translateX(-50%)';
+      el.style.color=amount>=0?'#00E676':'#FF5252';
+      el.textContent=(amount>=0?'+':'')+fmtYen(Math.abs(amount));
+      document.getElementById('trade-panel').appendChild(el);
+      setTimeout(function(){if(el.parentNode)el.remove()},1000);
+    }
+
+    // Audio
     var audioCtx=null;
-    function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)()}
-    function playSound(freq,dur,type){try{initAudio();var o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(0.2,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}catch(e){}}
-    function playProfit(){playSound(660,0.1,'sine');setTimeout(function(){playSound(880,0.15,'sine')},80)}
-    function playLoss(){playSound(330,0.2,'square')}
-    function playTrade(){playSound(440,0.05,'sine')}
-    function vibrate(ms){if(navigator.vibrate)navigator.vibrate(ms)}
+    function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+    function playTone(f,d,t,v){try{var c=initAudio(),o=c.createOscillator(),g=c.createGain();o.type=t||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.15,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
+    function sndProfit(){playTone(660,0.1,'sine');setTimeout(function(){playTone(880,0.12,'sine')},80)}
+    function sndLoss(){playTone(330,0.2,'square',0.12)}
+    function sndTrade(){playTone(500,0.04,'sine',0.1)}
+    function sndBigWin(){playTone(523,0.08,'sine');setTimeout(function(){playTone(659,0.08,'sine')},80);setTimeout(function(){playTone(784,0.08,'sine')},160);setTimeout(function(){playTone(1047,0.15,'sine')},240)}
+    function sndBigLoss(){playTone(200,0.15,'sawtooth',0.15);setTimeout(function(){playTone(150,0.25,'sawtooth',0.12)},150)}
+    function vibrate(ms){try{navigator.vibrate(ms)}catch(e){}}
 
-    function updateUI() {
-      var color = asset >= 10000 ? '#C9A84C' : '#ff4444';
-      document.getElementById('asset-display').style.color = color;
-      document.getElementById('asset-display').textContent = formatYen(asset);
-      document.getElementById('turn-display').textContent = 'ターン ' + (turn + 1) + ' / ' + maxTurns;
-      document.getElementById('rate-display').textContent = 'VLQ/JPY: ' + currentRate.toFixed(2);
-      document.getElementById('score-display').textContent = '資産: ' + formatYen(asset) + ' | ターン: ' + (turn + 1) + '/' + maxTurns;
-    }
-
-    function setLev(l) {
-      leverage = l;
-      document.querySelectorAll('.lev-btn').forEach(function(b) {
-        b.classList.toggle('active', b.textContent === '×' + l);
-      });
-    }
-
-    function trade(action) {
-      if (trading || turn >= maxTurns) return;
-      trading = true;
-
-      var oldRate = currentRate;
-      currentRate = generateRate(currentRate);
-      currentRate = parseFloat(currentRate.toFixed(2));
+    function trade(action){
+      if(trading||turn>=maxTurns)return;
+      trading=true;sndTrade();
+      var oldRate=currentRate;
+      currentRate=parseFloat(generateRate(currentRate).toFixed(2));
       rates.push(currentRate);
-      chart.data.labels.push('');
-      chart.data.datasets[0].data.push(currentRate);
-
-      // Keep chart window to last 20 points
-      if (rates.length > 20) {
-        rates.shift();
-        chart.data.labels.shift();
-        chart.data.datasets[0].data.shift();
-      }
+      chart.data.labels.push('');chart.data.datasets[0].data.push(currentRate);
+      if(rates.length>20){rates.shift();chart.data.labels.shift();chart.data.datasets[0].data.shift();}
       chart.update();
 
-      var change = (currentRate - oldRate) / oldRate;
-      var pnl = 0;
-      var resultEl = document.getElementById('trade-result');
+      var change=(currentRate-oldRate)/oldRate;
+      var pnl=0;
+      if(action==='buy')pnl=asset*change*leverage;
+      else if(action==='sell')pnl=asset*(-change)*leverage;
+      asset=Math.max(0,asset+pnl);
+      tradeResults.push(pnl);
+      if(pnl>0){wins++;if(pnl>bestTrade)bestTrade=pnl;}
+      if(pnl<0){losses++;if(pnl<worstTrade)worstTrade=pnl;}
+      assetHistory.push(asset);
+      updateSparkline();
 
-      if (action === 'buy') {
-        pnl = asset * change * leverage;
-      } else if (action === 'sell') {
-        pnl = asset * (-change) * leverage;
-      }
-      // hold = no pnl
+      var rEl=document.getElementById('trade-result');
+      var rcEl=document.getElementById('rate-change');
+      rcEl.textContent=(change>=0?'+':'')+(change*100).toFixed(2)+'%';
+      rcEl.style.color=change>=0?'#00E676':'#FF5252';
 
-      asset = Math.max(0, asset + pnl);
+      if(pnl>0){rEl.innerHTML='<span class="green">+'+fmtYen(pnl)+'</span>';sndProfit();vibrate(30);if(pnl/asset>0.15)sndBigWin();floatPnl(pnl);}
+      else if(pnl<0){rEl.innerHTML='<span class="red">'+fmtYen(pnl)+'</span>';sndLoss();vibrate([30,20,50]);if(Math.abs(pnl)/asset>0.15)sndBigLoss();floatPnl(pnl);}
+      else{rEl.innerHTML='<span style="color:#888">様子見</span>';floatPnl(0);}
 
-      if (pnl > 0) {
-        resultEl.innerHTML = '<span class="green">+' + formatYen(pnl) + ' (' + (change > 0 ? '+' : '') + (change * 100).toFixed(2) + '%)</span>';
-        playProfit(); vibrate(50);
-      } else if (pnl < 0) {
-        resultEl.innerHTML = '<span class="red">' + formatYen(pnl).replace('¥', '-¥') + ' (' + (change * 100).toFixed(2) + '%)</span>';
-        playLoss(); vibrate(100);
-      } else {
-        resultEl.innerHTML = '<span style="color:#aaa">様子見… (変動: ' + (change > 0 ? '+' : '') + (change * 100).toFixed(2) + '%)</span>';
-        playTrade();
-      }
-
-      turn++;
-      updateUI();
-
-      if (asset <= 0) {
-        asset = 0;
-        setTimeout(gameOver, 500);
-      } else if (turn >= maxTurns) {
-        setTimeout(gameOver, 500);
-      }
-
-      setTimeout(function() { trading = false; }, 300);
+      turn++;updateUI();showNews();
+      if(asset<=0){asset=0;setTimeout(gameOver,400);}
+      else if(turn>=maxTurns){setTimeout(gameOver,400);}
+      setTimeout(function(){trading=false},250);
     }
 
-    function gameStart() {
-      asset = 10000; turn = 0; leverage = 1; trading = false;
+    function gameStart(){
+      asset=10000;turn=0;leverage=1;trading=false;trend=0;momentum=0;
+      assetHistory=[10000];tradeResults=[];bestTrade=-Infinity;worstTrade=Infinity;wins=0;losses=0;
       setLev(1);
-      document.getElementById('trade-result').textContent = '';
-      initChart();
-      updateUI();
+      document.getElementById('trade-result').textContent='';
+      document.getElementById('rate-change').textContent='';
+      initChart();updateUI();showNews();updateSparkline();
       showScreen('play');
-      if(typeof gtag==='function') gtag('event','game_start',{game_name:GAME_NAME});
+      if(typeof gtag==='function')gtag('event','game_start',{game_name:GAME_NAME});
     }
 
-    function gameOver() {
-      var finalAsset = Math.floor(asset);
-      var pnl = finalAsset - 10000;
-      var pnlPct = ((finalAsset / 10000 - 1) * 100).toFixed(1);
+    function gameOver(){
+      var fa=Math.floor(asset);var pnl=fa-10000;
+      var hs=parseInt(localStorage.getItem('veliq_fx_hs')||'0');
+      if(fa>hs){localStorage.setItem('veliq_fx_hs',fa.toString());hs=fa;}
 
-      // Save highscore
-      var hs = parseInt(localStorage.getItem('veliq_fx_highscore') || '0');
-      if (finalAsset > hs) {
-        localStorage.setItem('veliq_fx_highscore', finalAsset.toString());
-        hs = finalAsset;
-      }
+      var rank,rankStyle;
+      if(fa>=100000000){rank='億り人';rankStyle='background:#C9A84C;color:#000';}
+      else if(fa>=1000000){rank='ミリオネア';rankStyle='background:#2a5a2a;color:#00E676';}
+      else if(fa>=100000){rank='トレーダー';rankStyle='background:#1a3a5a;color:#88ccff';}
+      else if(fa>=10000){rank='初心者';rankStyle='background:#222;color:#888';}
+      else if(fa>0){rank='破産寸前';rankStyle='background:#3a1a1a;color:#FF5252';}
+      else{rank='ゼロカット';rankStyle='background:#ff0000;color:#fff';}
 
-      var scoreEl = document.getElementById('gameover-score');
-      scoreEl.textContent = formatYen(finalAsset);
-      scoreEl.className = 'big ' + (finalAsset >= 10000 ? 'gold' : 'red');
+      var rb=document.getElementById('result-rank-badge');rb.textContent=rank;rb.style.cssText=rankStyle;
+      var ra=document.getElementById('result-asset');ra.textContent=fmtYen(fa);ra.className=fa>=10000?'gold':'red';
+      var rp=document.getElementById('result-pnl');
+      rp.innerHTML=pnl>=0?'<span class="green">損益: +'+fmtYen(pnl)+'</span>':'<span class="red">損益: '+fmtYen(pnl)+'</span>';
+      var totalTrades=wins+losses;
+      document.getElementById('s-winrate').textContent=totalTrades>0?Math.round(wins/totalTrades*100)+'%':'-%';
+      document.getElementById('s-best').textContent=bestTrade>-Infinity?'+'+fmtYen(bestTrade):'-';
+      document.getElementById('s-worst').textContent=worstTrade<Infinity?fmtYen(worstTrade):'-';
+      document.getElementById('hs-display').textContent='ハイスコア: '+fmtYen(hs);
 
-      var pnlEl = document.getElementById('result-pnl');
-      if (pnl >= 0) {
-        pnlEl.innerHTML = '<span class="green">損益: +' + formatYen(pnl) + ' (+' + pnlPct + '%)</span>';
-      } else {
-        pnlEl.innerHTML = '<span class="red">損益: -' + formatYen(Math.abs(pnl)) + ' (' + pnlPct + '%)</span>';
-      }
-
-      var msgs;
-      if (finalAsset >= 100000000) msgs = '億り人達成！天才トレーダー！';
-      else if (finalAsset >= 1000000) msgs = 'ミリオネア！素晴らしい！';
-      else if (finalAsset >= 100000) msgs = 'なかなかのトレーダー！';
-      else if (finalAsset >= 10000) msgs = 'まずまずの結果！';
-      else if (finalAsset > 0) msgs = '溶けた…レバレッジは怖い…';
-      else msgs = 'ゼロカット！全財産消失！';
-
-      document.getElementById('result-message').textContent = msgs;
-      document.getElementById('highscore-display').textContent = 'ハイスコア: ' + formatYen(hs);
-
-      var evtName = finalAsset <= 0 ? 'game_over' : 'game_clear';
-      if(typeof gtag==='function') gtag('event',evtName,{game_name:GAME_NAME,score:finalAsset});
-
-      showScreen('gameover');
-      showAd('ad-gameover');
-      showInterstitial();
+      if(typeof gtag==='function')gtag('event',fa<=0?'game_over':'game_clear',{game_name:GAME_NAME,score:fa});
+      showScreen('result');showAd('ad-result');showInterstitial();
     }
 
-    function buildShareData() { return { asset: Math.floor(asset).toLocaleString() }; }
+    function buildShareData(){var fa=Math.floor(asset);var rank=fa>=100000000?'億り人':fa>=1000000?'ミリオネア':fa>=100000?'トレーダー':'初心者';return{asset:fa.toLocaleString(),rank:rank}}
 
-    // Show highscore on start
-    (function() {
-      var hs = localStorage.getItem('veliq_fx_highscore');
-      if (hs) document.getElementById('highscore-display').textContent = 'ハイスコア: ' + formatYen(parseInt(hs));
-    })();
+    // Init highscore display
+    (function(){var hs=localStorage.getItem('veliq_fx_hs');if(hs)document.getElementById('hs-start').textContent='ハイスコア: '+fmtYen(parseInt(hs))})();
 
-    // === COMMON FUNCTIONS ===
-    function showAd(containerId){var c=document.getElementById(containerId);if(!c)return;c.innerHTML='<ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>';try{(adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
-    function showInterstitial(){playCount++;if(playCount%5!==0)return;var o=document.createElement('div');o.id='veliq-interstitial';o.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center;';o.innerHTML='<div style="background:#111;border:1px solid #C9A84C;border-radius:12px;padding:24px;max-width:340px;width:90%;text-align:center;"><p style="color:#C9A84C;margin-bottom:16px;">広告</p><ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto"></ins><button onclick="document.getElementById(\'veliq-interstitial\').remove()" style="margin-top:16px;padding:10px 32px;background:#C9A84C;color:#000;border:none;border-radius:6px;font-size:16px;cursor:pointer;">閉じる</button></div>';document.body.appendChild(o);try{(adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
-    function getShareText(data){var t=SHARE_TEXT;for(var k in data){t=t.replace(new RegExp('\\{'+k+'\\}','g'),data[k])}return t}
+    // Common
+    function showAd(id){var c=document.getElementById(id);if(!c)return;c.innerHTML='<ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>';try{(adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
+    function showInterstitial(){playCount++;if(playCount%5!==0)return;var o=document.createElement('div');o.id='veliq-interstitial';o.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center';o.innerHTML='<div style="background:#111;border:1px solid #C9A84C;border-radius:12px;padding:24px;max-width:340px;width:90%;text-align:center"><p style="color:#C9A84C;margin-bottom:16px">広告</p><button onclick="document.getElementById(\'veliq-interstitial\').remove()" style="padding:10px 32px;background:#C9A84C;color:#000;border:none;border-radius:6px;font-size:16px;cursor:pointer;font-family:Noto Sans JP,sans-serif">閉じる</button></div>';document.body.appendChild(o)}
+    function getShareText(d){var t=SHARE_TEXT;for(var k in d)t=t.replace(new RegExp('\\{'+k+'\\}','g'),d[k]);return t}
     function shareX(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'twitter'});window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(getShareText(buildShareData()))+'&url='+encodeURIComponent(location.href),'_blank','width=550,height=420')}
     function shareLINE(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'line'});window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(getShareText(buildShareData())),'_blank')}
-    function copyLink(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'copy'});if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){alert('URLをコピーしました！')})}else{var t=document.createElement('textarea');t.value=location.href;t.style.cssText='position:fixed;opacity:0;';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);alert('URLをコピーしました！')}}
+    function copyLink(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'copy'});if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){alert('URLをコピーしました！')})}else{var t=document.createElement('textarea');t.value=location.href;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);alert('URLをコピーしました！')}}
     if('serviceWorker' in navigator){navigator.serviceWorker.register('../../sw.js').catch(function(){})}
   </script>
 </body>

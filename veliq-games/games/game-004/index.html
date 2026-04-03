@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>渋谷鬼ごっこ | Veliq Games</title>
+  <meta name="description" content="渋谷の街を逃げ回れ！鬼から逃げてコインを集めるサバイバルゲーム">
+  <meta name="theme-color" content="#C9A84C">
+  <meta property="og:title" content="渋谷鬼ごっこ | Veliq Games">
+  <meta property="og:description" content="渋谷の街を逃げ回れ！鬼から逃げてコインを集めるサバイバルゲーム">
+  <meta property="og:image" content=""><meta property="og:url" content=""><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"GameApplication","name":"渋谷鬼ごっこ","description":"渋谷の街を逃げ回れ！","applicationCategory":"Game","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"author":{"@type":"Organization","name":"Veliq Games"}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="manifest" href="../../manifest.json">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;height:100%;font-family:'Noto Sans JP',sans-serif;background:#000;color:#fff;overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
+    #app{width:100%;height:100%;max-width:480px;margin:0 auto;position:relative;display:flex;flex-direction:column;overflow:hidden}
+    /* HUD */
+    #hud{padding:6px 12px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.85);z-index:100;position:relative;border-bottom:1px solid #1a1a1a}
+    #hud-left{display:flex;align-items:center;gap:10px}
+    #hud-score{font-size:16px;font-weight:900;color:#C9A84C}
+    #hud-time{font-size:13px;color:#888;font-weight:700}
+    #hud-right{display:flex;gap:6px}
+    .power-icon{width:28px;height:28px;border-radius:6px;background:#111;border:1px solid #222;display:flex;align-items:center;justify-content:center;font-size:14px;opacity:0.3}
+    .power-icon.active{opacity:1;border-color:#C9A84C;box-shadow:0 0 8px rgba(201,168,76,0.3)}
+    /* Game grid */
+    #grid-container{flex:1;position:relative;overflow:hidden;background:#050505}
+    #grid{position:absolute;transition:transform 0.15s ease-out}
+    .tile{position:absolute;width:28px;height:28px}
+    .t-road{background:#0a0a0a}
+    .t-building{background:#111;border:1px solid #1a1a1a}
+    .t-building.lit::after{content:'';position:absolute;width:3px;height:3px;background:rgba(201,168,76,0.6);border-radius:50%;top:4px;left:4px}
+    .t-building.lit2::after{top:auto;bottom:4px;left:auto;right:4px}
+    .t-cross{background:#0d0d0d;border-top:1px dashed #1a1a1a}
+    .t-neon{position:relative}
+    .neon-text{position:absolute;font-size:6px;color:#C9A84C;text-shadow:0 0 4px rgba(201,168,76,0.8);white-space:nowrap;pointer-events:none;z-index:2}
+    /* Entities */
+    .entity{position:absolute;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:20px;z-index:10;transition:transform 0.15s ease-out}
+    #player{z-index:15;filter:drop-shadow(0 0 6px rgba(201,168,76,0.6))}
+    .oni{filter:drop-shadow(0 0 8px rgba(255,0,0,0.5))}
+    .oni-boss{filter:drop-shadow(0 0 12px rgba(255,0,0,0.8));font-size:24px}
+    .collectible{z-index:8;animation:collectBob 1s ease-in-out infinite}
+    @keyframes collectBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+    /* Collect effect */
+    .collect-fx{position:absolute;font-size:14px;font-weight:900;color:#C9A84C;pointer-events:none;z-index:20;animation:fxPop 0.5s ease-out forwards}
+    @keyframes fxPop{0%{opacity:1;transform:translateY(0) scale(1.2)}100%{opacity:0;transform:translateY(-30px) scale(0.6)}}
+    /* Danger overlay */
+    #danger-overlay{position:absolute;inset:0;pointer-events:none;z-index:50;border:3px solid transparent;transition:border-color 0.2s}
+    #danger-overlay.danger{border-color:rgba(255,0,0,0.4);animation:dangerPulse 0.5s ease infinite}
+    @keyframes dangerPulse{0%,100%{border-color:rgba(255,0,0,0.4)}50%{border-color:rgba(255,0,0,0.1)}}
+    /* Death */
+    #death-flash{position:absolute;inset:0;background:rgba(255,0,0,0.3);pointer-events:none;z-index:60;opacity:0;transition:opacity 0.1s}
+    #death-flash.on{opacity:1}
+    #app.shake{animation:sk 0.3s ease}
+    @keyframes sk{0%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}100%{transform:translateX(0)}}
+    /* Boss warning */
+    #boss-warn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:80;pointer-events:none;opacity:0;transition:opacity 0.3s}
+    #boss-warn.show{opacity:1}
+    #boss-warn-text{font-size:24px;font-weight:900;color:#ff4444;text-shadow:0 0 20px rgba(255,0,0,0.8);animation:bwPulse 0.5s ease infinite}
+    @keyframes bwPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+    /* Screens */
+    .screen{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;z-index:200;background:#000;transition:opacity 0.4s}
+    .screen.hidden{opacity:0;pointer-events:none;z-index:-1}
+    .screen h2{font-size:26px;font-weight:900;color:#C9A84C;margin-bottom:12px}
+    .screen p{color:#999;font-size:14px;margin-bottom:8px;line-height:1.6}
+    .btn{display:inline-block;padding:16px 48px;background:#C9A84C;color:#000;font-size:18px;font-weight:900;border:none;border-radius:12px;cursor:pointer;margin:8px;font-family:'Noto Sans JP',sans-serif;transition:transform 0.15s;box-shadow:0 4px 20px rgba(201,168,76,0.3)}
+    .btn:active{transform:scale(0.93)}
+    .gold{color:#C9A84C}
+    .share-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+    .share-btn{padding:12px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Noto Sans JP',sans-serif}
+    .share-btn:active{transform:scale(0.93)}
+    .share-x{background:#1a1a1a;color:#fff;border:1px solid #333}
+    .share-line{background:#06C755;color:#fff}
+    .share-copy{background:#222;color:#ccc}
+    .ad-container{width:100%;min-height:50px;margin:12px 0}
+    .how-to{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:12px;padding:14px;margin:12px 0;text-align:left;width:100%;max-width:300px;font-size:12px;color:#777;line-height:1.8}
+    .how-to b{color:#C9A84C}
+    #result-hs{font-size:12px;color:#555;margin-top:8px}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="hud">
+      <div id="hud-left"><span id="hud-score">0</span><span id="hud-time">0:00</span></div>
+      <div id="hud-right">
+        <div class="power-icon" id="pw-shield">🛡️</div>
+        <div class="power-icon" id="pw-speed">⚡</div>
+        <div class="power-icon" id="pw-freeze">🌀</div>
+      </div>
+    </div>
+    <div id="grid-container">
+      <div id="grid"></div>
+      <div id="danger-overlay"></div>
+      <div id="death-flash"></div>
+      <div id="boss-warn"><div id="boss-warn-text">⚠️ ボスオニ出現！</div></div>
+      <!-- Start -->
+      <div id="screen-start" class="screen">
+        <h2>👹 渋谷鬼ごっこ</h2>
+        <p>渋谷の街を逃げ回れ！<br>鬼に捕まったら<span class="gold">ゲームオーバー</span></p>
+        <div class="how-to">
+          <b>操作:</b> スワイプ or タップ（行きたい方向）<br>
+          <b>🪙コイン:</b> +10点<br>
+          <b>⚡スピード:</b> 3秒間2倍速<br>
+          <b>🛡️シールド:</b> 1回だけ生存<br>
+          <b>🌀フリーズ:</b> 鬼が3秒停止<br>
+          <b>👹鬼:</b> 15秒ごとに追加（最大6体）<br>
+          <b>💀ボス:</b> 60秒後に出現！超速い！
+        </div>
+        <button class="btn" onclick="gameStart()">逃げろ！</button>
+      </div>
+      <!-- Game Over -->
+      <div id="screen-gameover" class="screen hidden">
+        <h2>👹 捕まった！</h2>
+        <p>スコア</p>
+        <p class="gold" style="font-size:42px;font-weight:900" id="go-score">0</p>
+        <p id="go-time" style="color:#888;font-size:13px"></p>
+        <div class="ad-container" id="ad-go"></div>
+        <div class="share-bar">
+          <button class="share-btn share-x" onclick="shareX()">Xでシェア</button>
+          <button class="share-btn share-line" onclick="shareLINE()">LINEでシェア</button>
+          <button class="share-btn share-copy" onclick="copyLink()">URLコピー</button>
+        </div>
+        <button class="btn" style="margin-top:12px" onclick="gameStart()">もう一回</button>
+        <div id="result-hs"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var GAME_NAME='shibuya-tag',SHARE_TEXT='渋谷鬼ごっこで{score}点！{time}秒生き延びた！ #VeliqGames #渋谷鬼ごっこ',AD_CLIENT='ca-pub-XXXXXXXXXXXXXXXX',playCount=0;
+    var TS=28; // tile size
+    var MAP_W=21,MAP_H=21; // visible map tiles
+    var map=[]; // 0=road,1=building
+    var player={x:10,y:10,shield:false,speed:false,freeze:false};
+    var onis=[],collectibles=[];
+    var score=0,timeAlive=0,coins=0,gameRunning=false,gameLoopId=null,moveInterval=null;
+    var currentDir=null; // queued direction
+    var PLAYER_MOVE_MS=150,ONI_MOVE_MS=400,MOVE_FAST=80;
+    var gridEl,containerEl;
+    var lastOniMove=0,lastPlayerMove=0,lastSpawn=0,bossSpawned=false;
+    var startTime=0,oniAddTimer=0;
+
+    // Audio
+    var audioCtx=null;
+    function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+    function playTone(f,d,t,v){try{var c=initAudio(),o=c.createOscillator(),g=c.createGain();o.type=t||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.15,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
+    function sndCoin(){playTone(1200,0.06,'sine',0.15);setTimeout(function(){playTone(1600,0.08,'sine',0.12)},50)}
+    function sndPower(){playTone(600,0.08,'sine');setTimeout(function(){playTone(800,0.06,'sine')},60);setTimeout(function(){playTone(1000,0.1,'sine')},120)}
+    function sndStep(){playTone(100,0.02,'square',0.04)}
+    function sndDeath(){playTone(200,0.15,'sawtooth',0.2);setTimeout(function(){playTone(120,0.3,'sawtooth',0.15)},120)}
+    function sndBossWarn(){playTone(400,0.1,'square',0.2);setTimeout(function(){playTone(300,0.1,'square',0.18)},150);setTimeout(function(){playTone(400,0.15,'square',0.2)},300)}
+    function vibrate(ms){try{navigator.vibrate(ms)}catch(e){}}
+
+    function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.add('hidden')});var e=document.getElementById('screen-'+id);if(e)e.classList.remove('hidden')}
+
+    // === MAP GENERATION ===
+    function generateMap(){
+      map=[];
+      for(var y=0;y<MAP_H;y++){map[y]=[];for(var x=0;x<MAP_W;x++){map[y][x]=0;}}
+      // Create building blocks (3x3 or 2x2 with roads between)
+      for(var by=1;by<MAP_H-1;by+=4){
+        for(var bx=1;bx<MAP_W-1;bx+=4){
+          var bw=2+Math.floor(Math.random()*2); // 2 or 3
+          var bh=2+Math.floor(Math.random()*2);
+          for(var dy=0;dy<bh&&by+dy<MAP_H-1;dy++){
+            for(var dx=0;dx<bw&&bx+dx<MAP_W-1;dx++){
+              map[by+dy][bx+dx]=1;
+            }
+          }
+        }
+      }
+      // Ensure player spawn is clear
+      for(var py=9;py<=11;py++)for(var px=9;px<=11;px++)map[py][px]=0;
+    }
+
+    function renderMap(){
+      gridEl=document.getElementById('grid');
+      gridEl.innerHTML='';
+      gridEl.style.width=(MAP_W*TS)+'px';
+      gridEl.style.height=(MAP_H*TS)+'px';
+      for(var y=0;y<MAP_H;y++){
+        for(var x=0;x<MAP_W;x++){
+          var t=document.createElement('div');
+          t.className='tile '+(map[y][x]===1?'t-building':'t-road');
+          t.style.left=(x*TS)+'px';t.style.top=(y*TS)+'px';
+          // Random window lights on buildings
+          if(map[y][x]===1&&Math.random()<0.3)t.classList.add(Math.random()<0.5?'lit':'lit2');
+          // Neon signs on some road tiles
+          if(map[y][x]===0&&Math.random()<0.02){
+            t.classList.add('t-neon');
+            var signs=['渋谷','109','VELIQ','GAME','夜'];
+            var neon=document.createElement('span');neon.className='neon-text';
+            neon.textContent=signs[Math.floor(Math.random()*signs.length)];
+            neon.style.top='-2px';neon.style.left='0';
+            t.appendChild(neon);
+          }
+          gridEl.appendChild(t);
+        }
+      }
+    }
+
+    // === ENTITIES ===
+    function createEntity(emoji,x,y,cls){
+      var el=document.createElement('div');
+      el.className='entity '+(cls||'');
+      el.textContent=emoji;
+      el.style.transform='translate('+(x*TS)+'px,'+(y*TS)+'px)';
+      gridEl.appendChild(el);
+      return el;
+    }
+
+    function spawnCollectible(){
+      var types=[{emoji:'🪙',type:'coin',weight:6},{emoji:'⚡',type:'speed',weight:2},{emoji:'🛡️',type:'shield',weight:1},{emoji:'🌀',type:'freeze',weight:1}];
+      var total=types.reduce(function(s,t){return s+t.weight},0);
+      var r=Math.random()*total,acc=0,chosen=types[0];
+      for(var i=0;i<types.length;i++){acc+=types[i].weight;if(r<acc){chosen=types[i];break;}}
+      var x,y,tries=0;
+      do{x=Math.floor(Math.random()*MAP_W);y=Math.floor(Math.random()*MAP_H);tries++;}
+      while((map[y][x]===1||(x===player.x&&y===player.y))&&tries<50);
+      if(tries>=50)return;
+      var el=createEntity(chosen.emoji,x,y,'collectible');
+      collectibles.push({x:x,y:y,type:chosen.type,el:el});
+    }
+
+    function spawnOni(type){
+      var x,y,tries=0;
+      do{x=Math.floor(Math.random()*MAP_W);y=Math.floor(Math.random()*MAP_H);tries++;}
+      while((map[y][x]===1||Math.abs(x-player.x)+Math.abs(y-player.y)<6)&&tries<50);
+      if(tries>=50){x=0;y=0;}
+      var emoji=type==='boss'?'💀':type==='fast'?'👺':'👹';
+      var cls=type==='boss'?'oni oni-boss':'oni';
+      var el=createEntity(emoji,x,y,cls);
+      var speed=type==='boss'?250:type==='fast'?300:ONI_MOVE_MS;
+      onis.push({x:x,y:y,type:type,el:el,speed:speed,lastMove:0});
+    }
+
+    // === MOVEMENT ===
+    function canMove(x,y){return x>=0&&x<MAP_W&&y>=0&&y<MAP_H&&map[y][x]===0;}
+
+    function movePlayer(dx,dy,now){
+      var ms=player.speed?MOVE_FAST:PLAYER_MOVE_MS;
+      if(now-lastPlayerMove<ms)return;
+      var nx=player.x+dx,ny=player.y+dy;
+      if(!canMove(nx,ny))return;
+      player.x=nx;player.y=ny;
+      lastPlayerMove=now;
+      sndStep();
+      // Update position
+      player.el.style.transform='translate('+(player.x*TS)+'px,'+(player.y*TS)+'px)';
+      // Center camera
+      centerCamera();
+      // Check collectibles
+      checkCollectibles();
+      // Check oni collision
+      checkCollision();
+    }
+
+    function centerCamera(){
+      containerEl=document.getElementById('grid-container');
+      var cw=containerEl.offsetWidth,ch=containerEl.offsetHeight;
+      var tx=-(player.x*TS-cw/2+TS/2);
+      var ty=-(player.y*TS-ch/2+TS/2);
+      gridEl.style.transform='translate('+tx+'px,'+ty+'px)';
+    }
+
+    function moveOni(oni,now){
+      if(player.freeze)return;
+      if(now-oni.lastMove<oni.speed)return;
+      oni.lastMove=now;
+      // Simple chase: move toward player
+      var dx=0,dy=0;
+      var diffX=player.x-oni.x,diffY=player.y-oni.y;
+      // Prefer the axis with larger distance
+      if(Math.abs(diffX)>=Math.abs(diffY)){dx=diffX>0?1:-1;}
+      else{dy=diffY>0?1:-1;}
+      // Try primary direction, then fallback
+      if(canMove(oni.x+dx,oni.y+dy)){oni.x+=dx;oni.y+=dy;}
+      else if(dx!==0&&canMove(oni.x,oni.y+(diffY>0?1:-1))){oni.y+=(diffY>0?1:-1);}
+      else if(dy!==0&&canMove(oni.x+(diffX>0?1:-1),oni.y)){oni.x+=(diffX>0?1:-1);}
+      // Random escape for fast oni
+      if(oni.type==='fast'&&Math.random()<0.3){
+        var dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+        var d=dirs[Math.floor(Math.random()*dirs.length)];
+        if(canMove(oni.x+d[0],oni.y+d[1])){oni.x+=d[0];oni.y+=d[1];}
+      }
+      oni.el.style.transform='translate('+(oni.x*TS)+'px,'+(oni.y*TS)+'px)';
+    }
+
+    function checkCollectibles(){
+      for(var i=collectibles.length-1;i>=0;i--){
+        var c=collectibles[i];
+        if(c.x===player.x&&c.y===player.y){
+          // Collect!
+          c.el.remove();
+          var fx=document.createElement('div');fx.className='collect-fx';
+          fx.style.transform='translate('+(c.x*TS)+'px,'+(c.y*TS-10)+'px)';
+          switch(c.type){
+            case'coin':score+=10;coins++;fx.textContent='+10';sndCoin();break;
+            case'speed':player.speed=true;setTimeout(function(){player.speed=false;document.getElementById('pw-speed').classList.remove('active')},3000);document.getElementById('pw-speed').classList.add('active');fx.textContent='⚡SPEED!';sndPower();break;
+            case'shield':player.shield=true;document.getElementById('pw-shield').classList.add('active');fx.textContent='🛡️SHIELD!';sndPower();break;
+            case'freeze':player.freeze=true;setTimeout(function(){player.freeze=false;document.getElementById('pw-freeze').classList.remove('active')},3000);document.getElementById('pw-freeze').classList.add('active');fx.textContent='🌀FREEZE!';sndPower();vibrate(50);break;
+          }
+          gridEl.appendChild(fx);setTimeout(function(el){return function(){el.remove()}}(fx),500);
+          collectibles.splice(i,1);
+          updateHUD();
+        }
+      }
+    }
+
+    function checkCollision(){
+      for(var i=0;i<onis.length;i++){
+        if(onis[i].x===player.x&&onis[i].y===player.y){
+          if(player.shield){
+            player.shield=false;
+            document.getElementById('pw-shield').classList.remove('active');
+            // Push oni away
+            onis[i].x=Math.max(0,Math.min(MAP_W-1,onis[i].x+(onis[i].x>player.x?2:-2)));
+            onis[i].el.style.transform='translate('+(onis[i].x*TS)+'px,'+(onis[i].y*TS)+'px)';
+            vibrate(100);
+            var fx=document.createElement('div');fx.className='collect-fx';fx.textContent='🛡️ SAVED!';
+            fx.style.transform='translate('+(player.x*TS)+'px,'+(player.y*TS-10)+'px)';
+            gridEl.appendChild(fx);setTimeout(function(){fx.remove()},500);
+          } else {
+            gameOver();
+          }
+          return;
+        }
+      }
+    }
+
+    function updateHUD(){
+      document.getElementById('hud-score').textContent=score;
+      var secs=Math.floor(timeAlive);
+      var m=Math.floor(secs/60),s=secs%60;
+      document.getElementById('hud-time').textContent=m+':'+(s<10?'0':'')+s;
+      // Danger indicator
+      var minDist=Infinity;
+      for(var i=0;i<onis.length;i++){
+        var d=Math.abs(onis[i].x-player.x)+Math.abs(onis[i].y-player.y);
+        if(d<minDist)minDist=d;
+      }
+      document.getElementById('danger-overlay').classList.toggle('danger',minDist<=3);
+    }
+
+    // === GAME LOOP ===
+    function gameLoop(now){
+      if(!gameRunning){gameLoopId=null;return;}
+      timeAlive=(now-startTime)/1000;
+      score=Math.floor(timeAlive)*10+coins*10;
+
+      // Move player if direction held
+      if(currentDir){
+        var d=currentDir;
+        movePlayer(d[0],d[1],now);
+      }
+
+      // Move onis
+      for(var i=0;i<onis.length;i++)moveOni(onis[i],now);
+      checkCollision();
+
+      // Spawn oni every 15 seconds
+      if(onis.length<6&&timeAlive-oniAddTimer>=15){
+        oniAddTimer=timeAlive;
+        spawnOni(Math.random()<0.3?'fast':'normal');
+      }
+
+      // Boss at 60s
+      if(!bossSpawned&&timeAlive>=60){
+        bossSpawned=true;
+        var bw=document.getElementById('boss-warn');
+        bw.classList.add('show');sndBossWarn();vibrate([100,50,100,50,200]);
+        setTimeout(function(){bw.classList.remove('show');spawnOni('boss')},2000);
+      }
+
+      // Spawn collectible every 8-12 seconds
+      if(now-lastSpawn>8000+Math.random()*4000){lastSpawn=now;spawnCollectible();}
+
+      updateHUD();
+      gameLoopId=requestAnimationFrame(gameLoop);
+    }
+
+    // === GAME START / OVER ===
+    function gameStart(){
+      score=0;coins=0;timeAlive=0;oniAddTimer=0;bossSpawned=false;
+      player.x=10;player.y=10;player.shield=false;player.speed=false;player.freeze=false;
+      onis=[];collectibles=[];currentDir=null;
+      document.querySelectorAll('.power-icon').forEach(function(e){e.classList.remove('active')});
+      generateMap();renderMap();
+      player.el=createEntity('🏃',player.x,player.y,'');
+      player.el.id='player';
+      centerCamera();
+      // Initial collectibles
+      for(var i=0;i<5;i++)spawnCollectible();
+      // First oni after 3 seconds
+      setTimeout(function(){if(gameRunning)spawnOni('normal')},3000);
+
+      startTime=performance.now();lastSpawn=startTime;lastPlayerMove=0;
+      gameRunning=true;
+      showScreen('none');
+      if(typeof gtag==='function')gtag('event','game_start',{game_name:GAME_NAME});
+      gameLoopId=requestAnimationFrame(gameLoop);
+    }
+
+    function gameOver(){
+      gameRunning=false;
+      sndDeath();vibrate([100,50,200]);
+      document.getElementById('death-flash').classList.add('on');
+      document.getElementById('app').classList.add('shake');
+      setTimeout(function(){
+        document.getElementById('death-flash').classList.remove('on');
+        document.getElementById('app').classList.remove('shake');
+        var secs=Math.floor(timeAlive);
+        document.getElementById('go-score').textContent=score;
+        document.getElementById('go-time').textContent=Math.floor(secs/60)+'分'+(secs%60)+'秒 生存';
+        var hs=parseInt(localStorage.getItem('veliq_tag_hs')||'0');
+        if(score>hs){localStorage.setItem('veliq_tag_hs',score.toString());hs=score;}
+        document.getElementById('result-hs').textContent='ハイスコア: '+hs;
+        if(typeof gtag==='function')gtag('event','game_over',{game_name:GAME_NAME,score:score});
+        showScreen('gameover');showAd('ad-go');showInterstitial();
+      },500);
+    }
+
+    // === CONTROLS ===
+    var touchStartX=0,touchStartY=0;
+    document.addEventListener('touchstart',function(e){
+      if(!gameRunning)return;
+      touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;
+    },{passive:true});
+    document.addEventListener('touchmove',function(e){
+      if(!gameRunning)return;
+      var dx=e.touches[0].clientX-touchStartX,dy=e.touches[0].clientY-touchStartY;
+      if(Math.abs(dx)<15&&Math.abs(dy)<15)return;
+      e.preventDefault();
+      if(Math.abs(dx)>Math.abs(dy)){currentDir=dx>0?[1,0]:[-1,0];}
+      else{currentDir=dy>0?[0,1]:[0,-1];}
+      touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;
+    },{passive:false});
+    document.addEventListener('touchend',function(){currentDir=null;});
+
+    document.addEventListener('keydown',function(e){
+      if(!gameRunning)return;
+      switch(e.code){
+        case'ArrowUp':case'KeyW':currentDir=[0,-1];break;
+        case'ArrowDown':case'KeyS':currentDir=[0,1];break;
+        case'ArrowLeft':case'KeyA':currentDir=[-1,0];break;
+        case'ArrowRight':case'KeyD':currentDir=[1,0];break;
+      }
+    });
+    document.addEventListener('keyup',function(){currentDir=null;});
+
+    // Common
+    function buildShareData(){return{score:score,time:Math.floor(timeAlive)}}
+    function showAd(id){var c=document.getElementById(id);if(!c)return;c.innerHTML='<ins class="adsbygoogle" style="display:block" data-ad-client="'+AD_CLIENT+'" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>';try{(adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
+    function showInterstitial(){playCount++;if(playCount%5!==0)return;var o=document.createElement('div');o.id='veliq-interstitial';o.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center';o.innerHTML='<div style="background:#111;border:1px solid #C9A84C;border-radius:12px;padding:24px;max-width:340px;width:90%;text-align:center"><p style="color:#C9A84C;margin-bottom:16px">広告</p><button onclick="document.getElementById(\'veliq-interstitial\').remove()" style="padding:10px 32px;background:#C9A84C;color:#000;border:none;border-radius:6px;font-size:16px;cursor:pointer;font-family:Noto Sans JP,sans-serif">閉じる</button></div>';document.body.appendChild(o)}
+    function getShareText(d){var t=SHARE_TEXT;for(var k in d)t=t.replace(new RegExp('\\{'+k+'\\}','g'),d[k]);return t}
+    function shareX(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'twitter'});window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(getShareText(buildShareData()))+'&url='+encodeURIComponent(location.href),'_blank','width=550,height=420')}
+    function shareLINE(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'line'});window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(getShareText(buildShareData())),'_blank')}
+    function copyLink(){if(typeof gtag==='function')gtag('event','share_click',{game_name:GAME_NAME,platform:'copy'});if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){alert('URLをコピーしました！')})}else{var t=document.createElement('textarea');t.value=location.href;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);alert('URLをコピーしました！')}}
+    if('serviceWorker' in navigator){navigator.serviceWorker.register('../../sw.js').catch(function(){})}
+  </script>
+</body>
+</html>
